@@ -32,14 +32,13 @@ class CreateR2 extends Migration
             $table->string('studen_id')->unique();
             $table->string('name');
             $table->date('dob');
-            $table->string('pob');
-            $table->string('code1');
-            $table->string('code2');
-            $table->string('note')->nullable();
             $table->boolean('status');
-            $table->integer('class_id')->unsigned();           
-            $table->timestamps();
+            $table->integer('gender',1);
+            $table->integer('class_id')->unsigned();
+            $table->integer('grade_id')->unsigned();              
             $table->foreign('class_id')->references('id')->on('classes');
+            $table->foreign('grade_id')->references('id')->on('grades');
+            $table->timestamps();
         });
     }
 

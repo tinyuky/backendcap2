@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\Students as StudentsResource;
 use Illuminate\Foundation\Http\FormRequest;
 use JWTAuth;
+use Validator;
 
 class StudentsController extends Controller
 {
@@ -94,7 +95,18 @@ class StudentsController extends Controller
             $new->student_id = $row['ma_sv'];
             $new->name = $row['ho_ten_sinh_vien'].$row['ten'];
             $new->dob = date('Y-m-d', strtotime($row['ngay_sinh']));
-            $new->gender = $row['phai'];
+            switch ($row['phai']){
+                case 'Nam':
+                    $new->gender = 1;
+                    break;
+                case 'Nữ':
+                    $new->gender = 2;
+                    break;
+                
+                default:
+                    $new->gender = 0;
+                    break;
+            }  
             $grade = Grades::where('name',$row['khoi'])->first();
             $class = Classes::where('name',$row['lop'])->first();
             $new->grade_id = $grade->id;
@@ -135,6 +147,33 @@ class StudentsController extends Controller
     }
 
     public function update(Request $request){
+        $messages = [
+            'Id.required' => 'Id không được trống',
+            'StudentId.unique' => 'Mã sinh viên đã sử dụng',
+            'StudentId.required' => 'Mã sinh viên không để trống',
+            'Name.required' => 'Họ và tên không để trống',
+            'Dob.required' => 'Ngày sinh không để trống',
+            'Dob.date' => 'Ngày sinh không đúng định dạng',
+            'Gender.required' => 'Phái không để trống',
+            'ClassId.required' => 'Lóp không để trống',
+            'GradeId.required' => 'Khối không để trống',
+            'Status.required' => 'Trạng thái không để trống',
+        ];
+        $validator = Validator::make($request->all(), [
+            'Id' => 'required',
+            'StudentId' => 'required|unique:students,student_id|',
+            'Name' => 'required',
+            'Dob' => 'required|date',
+            'Gender' => 'required|numeric',
+            'ClassId' => 'required|numeric',
+            'GradeId' => 'required|numeric',
+            'Status' => 'required|numeric',
+        ],$messages);
+
+        if($validator->fails()){
+            return $validator->errors();
+        }
+
         $db = Students::find($request['Id']);
         $db->student_id = $request->input('StudentId');
         $db->name = $request->input('Name');
@@ -152,6 +191,7 @@ class StudentsController extends Controller
             'Id'=> $student->id,
             'StudentId' => $student->student_id,
             'Name' => $student->name,
+            'Dob' =>$student->dob,
             'Gender' => $student->gender,
             'Class'=> $student->class->name,
             'Grade'=> $student->grade->name,
@@ -169,6 +209,7 @@ class StudentsController extends Controller
                 'Id'=> $student->id,
                 'StudentId' => $student->student_id,
                 'Name' => $student->name,
+                'Dob' =>$student->dob,
                 'Gender' => $student->gender,
                 'Class'=> $student->class->name,
                 'Grade'=> $student->grade->name,
