@@ -28,6 +28,7 @@ class AdminController extends Controller
             'StaffId.required' => 'Mã nhân viên không để trống',
             'StaffId.unique' => 'Mã nhân viên đã sử dụng',
             'Name.required' => 'Họ và tên không để trống',
+            'Name.not_regex' => 'Họ và tên không đúng định dạng',
             'Email.unique' => 'Email đã sử dụng',
             'Email.required' => 'Email không để trống',
             'Email.email' => 'Email không đúng định dạng',
@@ -39,17 +40,25 @@ class AdminController extends Controller
             'Phone2.required' => 'SĐT2 không được để trống',
             'Phone2.numeric' => 'SĐT2 không đúng định dạng',
             'Role.required' => 'Vai trò không được để trống',
+            'Role.in' => 'Vai trò không tồn tại',
         ];
         $validator = Validator::make($request->all(), [
             'StaffId' => 'required|unique:users,staffid|',
-            'Name' => 'required',
+            // 'Name' => 'required|regex:/^[_A-z]*((-|\s)*[_A-z])/g',
+            'Name' => array(
+                'required',
+                'regex:/^[-@./#&+\w\s]*$/',
+            ),
             'Email' => 'required|unique:users,email|email',
             'OtherEmail' => 'required|email',
             'Password' => 'required',
             'Phone1' => 'required|numeric',
             'Phone2' => 'required|numeric',
-            'Role' => 'required',
-        ], $messages)->validate();
+            'Role' => 'required|in:admin,assistant,student,studentservice,board,lecturer',
+        ], $messages);
+        if($validator->fails()){
+           return $validator->errors();
+        }
 
         //Add account to database
         $user = new User;
@@ -74,6 +83,7 @@ class AdminController extends Controller
             'StaffId.required' => 'Mã nhân viên không để trống',
             'StaffId.unique' => 'Mã nhân viên đã sử dụng',
             'Name.required' => 'Họ và tên không để trống',
+            'Name.regex' => 'Họ và tên không đúng định dạng',
             'Email.unique' => 'Email đã sử dụng',
             'Email.required' => 'Email không để trống',
             'Email.email' => 'Email không đúng định dạng',
@@ -85,8 +95,25 @@ class AdminController extends Controller
             'Phone2.required' => 'SĐT2 không được để trống',
             'Phone2.numeric' => 'SĐT2 không đúng định dạng',
             'Role.required' => 'Vai trò không được để trống',
+            'Role.in' => 'Vai trò không tồn tại',
             'Status.required' => 'Trạng thái không được để trống',
+            'Status.min' => 'Trạng thái không đúng định dạng',
+            'Status.max' => 'Trạng thái không đúng định dạng',
         ];
+        $validator2 = Validator::make($request->all(), [
+            'Name' => 'required|string|regex:/^[a-zA-Z]/',
+            'OtherEmail' => 'required|email',
+            'Password' => 'required',
+            'Phone1' => 'required',
+            'Phone2' => 'required',
+            'Role' => 'required|in:admin,assistant,student,studentservice,board,lecturer',
+            'Status' => 'required|numeric|min:0|max:1',
+        ], $messages);
+
+        if($validator2->fails()){
+           return $validator2->errors();
+        }
+
         $validator = Validator::make($request->all(), [
             'StaffId' => [
                 'required',
@@ -96,14 +123,15 @@ class AdminController extends Controller
                 'required',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'Name' => 'required',
-            'OtherEmail' => 'required|email',
-            'Password' => 'required',
-            'Phone1' => 'required',
-            'Phone2' => 'required',
-            'Role' => 'required',
-            'Status' => 'required',
-        ], $messages)->validate();
+        ], $messages);
+
+        
+
+        if($validator->fails()){
+           return $validator->errors();
+        }
+
+        
 
         $user->staffid = $request->input('StaffId');
         $user->name = $request->input('Name');

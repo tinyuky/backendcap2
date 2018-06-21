@@ -14,6 +14,7 @@ use App\Http\Resources\Students as StudentsResource;
 use Illuminate\Foundation\Http\FormRequest;
 use JWTAuth;
 use Validator;
+use Illuminate\Validation\Rule;
 
 class StudentsController extends Controller
 {
@@ -147,10 +148,11 @@ class StudentsController extends Controller
     }
 
     public function update(Request $request){
+        $db = Students::find($request['Id']);
         $messages = [
             'Id.required' => 'Id không được trống',
-            'StudentId.unique' => 'Mã sinh viên đã sử dụng',
-            'StudentId.required' => 'Mã sinh viên không để trống',
+            'student_id.unique' => 'Mã sinh viên đã sử dụng',
+            'student_id.required' => 'Mã sinh viên không để trống',
             'Name.required' => 'Họ và tên không để trống',
             'Dob.required' => 'Ngày sinh không để trống',
             'Dob.date' => 'Ngày sinh không đúng định dạng',
@@ -161,7 +163,10 @@ class StudentsController extends Controller
         ];
         $validator = Validator::make($request->all(), [
             'Id' => 'required',
-            'StudentId' => 'required|unique:students,student_id|',
+            'student_id' => [
+                'required',
+                Rule::unique('students')->ignore($db->student_id,"student_id"),
+            ],
             'Name' => 'required',
             'Dob' => 'required|date',
             'Gender' => 'required|numeric',
@@ -171,11 +176,10 @@ class StudentsController extends Controller
         ],$messages);
 
         if($validator->fails()){
-            return $validator->errors();
+           return $validator->errors();
         }
 
-        $db = Students::find($request['Id']);
-        $db->student_id = $request->input('StudentId');
+        $db->student_id = $request->input('student_id');
         $db->name = $request->input('Name');
         $db->dob = date('Y-m-d', strtotime($request->input('Dob')));
         $db->gender = $request->input('Gender');
