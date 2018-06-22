@@ -27,6 +27,7 @@ class AdminController extends Controller
         $messages = [
             'StaffId.required' => 'Mã nhân viên không để trống',
             'StaffId.unique' => 'Mã nhân viên đã sử dụng',
+            'StaffId.not_regex' => 'Mã nhân viên không đúng định dạng',
             'Name.required' => 'Họ và tên không để trống',
             'Name.not_regex' => 'Họ và tên không đúng định dạng',
             'Email.unique' => 'Email đã sử dụng',
@@ -43,11 +44,14 @@ class AdminController extends Controller
             'Role.in' => 'Vai trò không tồn tại',
         ];
         $validator = Validator::make($request->all(), [
-            'StaffId' => 'required|unique:users,staffid|',
-            // 'Name' => 'required|regex:/^[_A-z]*((-|\s)*[_A-z])/g',
+            'StaffId' => array(
+                'required',
+                'unique:users,staffid',
+                'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+            ),
             'Name' => array(
                 'required',
-                'regex:/^[-@./#&+\w\s]*$/',
+                'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
             ),
             'Email' => 'required|unique:users,email|email',
             'OtherEmail' => 'required|email',
@@ -77,13 +81,15 @@ class AdminController extends Controller
     //Edit account function
     public function update(Request $request)
     {
-        $user = User::find($request->input('Id'));
-
+        //messega for validate
         $messages = [
+            'Id.required' => 'Id không tồn tại',
+            'Id.not_regex' => 'Id sai định dạng',
             'StaffId.required' => 'Mã nhân viên không để trống',
             'StaffId.unique' => 'Mã nhân viên đã sử dụng',
+            'StaffId.not_regex' => 'Mã nhân viên không đúng định dạng',
             'Name.required' => 'Họ và tên không để trống',
-            'Name.regex' => 'Họ và tên không đúng định dạng',
+            'Name.not_regex' => 'Họ và tên không đúng định dạng',
             'Email.unique' => 'Email đã sử dụng',
             'Email.required' => 'Email không để trống',
             'Email.email' => 'Email không đúng định dạng',
@@ -97,42 +103,49 @@ class AdminController extends Controller
             'Role.required' => 'Vai trò không được để trống',
             'Role.in' => 'Vai trò không tồn tại',
             'Status.required' => 'Trạng thái không được để trống',
-            'Status.min' => 'Trạng thái không đúng định dạng',
-            'Status.max' => 'Trạng thái không đúng định dạng',
+            'Status.in' => 'Trạng thái không tồn tại',
         ];
+        //validate id account
         $validator2 = Validator::make($request->all(), [
-            'Name' => 'required|string|regex:/^[a-zA-Z]/',
-            'OtherEmail' => 'required|email',
-            'Password' => 'required',
-            'Phone1' => 'required',
-            'Phone2' => 'required',
-            'Role' => 'required|in:admin,assistant,student,studentservice,board,lecturer',
-            'Status' => 'required|numeric|min:0|max:1',
+            'Id' => array(
+                'required',
+                'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+            ),
         ], $messages);
-
         if($validator2->fails()){
            return $validator2->errors();
         }
 
+        // get account
+        $user = User::find($request->input('Id'));
+
+        // validate anothor field
         $validator = Validator::make($request->all(), [
             'StaffId' => [
                 'required',
                 Rule::unique('users')->ignore($user->id),
+                'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
             ],
             'Email' => [
                 'required',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'Name' => array(
+                'required',
+                'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+            ),
+            'OtherEmail' => 'required|email',
+            'Password' => 'required',
+            'Phone1' => 'required',
+            'Phone2' => 'required',
+            'Role' => 'required|in:admin,assistant,student,studentservice,board,lecturer',
+            'Status' => 'required|numeric|in:0,1',
         ], $messages);
-
-        
-
         if($validator->fails()){
            return $validator->errors();
         }
 
-        
-
+        //save data to database
         $user->staffid = $request->input('StaffId');
         $user->name = $request->input('Name');
         $user->email = $request->input('Email');

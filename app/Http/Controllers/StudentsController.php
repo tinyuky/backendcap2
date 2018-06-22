@@ -19,65 +19,134 @@ use Illuminate\Validation\Rule;
 class StudentsController extends Controller
 {
     public function handle(Request $request){
+        // return $request;
+        // get file
         $file = $request->file('File');
         $filename = uniqid();
+        // save file
         Storage::disk('public_uploads')->put($filename, File::get($file));
+        // read file
         $data = Excel::load(Storage::disk('public_uploads')->getDriver()->getAdapter()->getPathPrefix().$filename, function($reader) {
         })->get();
+        // create array to store data
         $students = [];
         $count = 0;
-        foreach($data as $row ){
-            $erstt = '';
-            $new = [];
-            $new['STT'] = $row['tt'];
-            $new['Student_id'] = $row['ma_sv'];
-            $new['Name'] = $row['ho_ten_sinh_vien'].$row['ten'];
-            $new['Dob'] = $row['ngay_sinh'];
-            $new['Class'] = $row['lop'];
-            $new['Grade'] = $row['khoi'];
-            $new['Gender'] = $row['phai'];
-            $new['Pob'] = $row['noi_sinh'];
-            $new['Code1'] = $row['ma_khoa'];
-            $new['Code2'] = $row['ma_nganh'];
-            $new['Note'] = $row['ghi_chu'];
+        // return $data;
+
+        // message for validate
+        $messages = [
+            'Student_id.unique' => 'Mã sinh viên đã sử dụng',
+            'Student_id.required' => 'Mã sinh viên không để trống',
+            'Student_id.not_regex' => 'Mã sinh viên sai định dạng',
+            'Name.required' => 'Họ và tên lót không để trống',
+            'Name.not_regex' => 'Họ và tên lót sai định dạng',
+            'FirstName.required' => 'Tên không để trống',
+            'FirstName.not_regex' => 'Tên sai định dạng',
+            'Dob.required' => 'Ngày sinh không để trống',
+            'Dob.date' => 'Ngày sinh không đúng định dạng',
+            'Gender.in' => 'Phái không tồn tại',
+            'Gender.not_regex' => 'Phái sai định dạng',
+            'Class.required' => 'Lóp không để trống',
+            'Class.not_regex' => 'Lóp sai định dạng',
+            'Grade.required' => 'Khối không để trống',
+            'Grade.not_regex' => 'Khối sai định dạng',
+        ];
+        if(isset($data)){
+            // check data
+            foreach($data as $row ){
+                $erstt = '';
+                $new = [];
+                $new['STT'] = $row['tt'];
+                $new['Student_id'] = $row['ma_sv'];
+                $new['Name'] = $row['ho_ten_sinh_vien'].' '.$row['ten'];
+                $new['FirstName'] = $row['ten'];
+                $new['Dob'] = str_replace('/','-',$row['ngay_sinh']);
+                $new['Class'] = $row['lop'];
+                $new['Grade'] = $row['khoi'];
+                $new['Gender'] = $row['phai'];
             
-            $findst = Students::where('student_id',$row['ma_sv'])->first();           
-            if(!empty($findst)){
-                $count += 1;
-                $erstt .= 'Mã sinh viên đã tồn tại';
-            }
-            else{
-                $findcl = Classes::where('name',$row['lop'])->first();
-                if(empty($findcl)){
+                //validate data
+                $validator = Validator::make($new, [
+                    'Student_id' => [
+                        'required',
+                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                    ],
+                    'Name' => array(
+                        'required',
+                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                    ),
+                    'FirstName' => array(
+                        'required',
+                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                    ),
+                    'Dob' => 'required|date',
+                    'Gender' => array(
+                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                        'in:Nam,Nữ',
+                    ),
+                    'Class' => array(
+                        'required',
+                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                    ),
+                    'Grade' => array(
+                        'required',
+                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                    ),
+                ],$messages);
+                // if($validator->fails()){
+                //     return $validator->errors();
+                // }
+                if($validator->fails()){
                     $count += 1;
-                    $erstt .= 'Lớp không tồn tại';
+                    $aa = $validator->errors()->all();
+                    foreach($aa as $k){
+                        $erstt .= '/'.$k;
+                    }
+                }
+                //check database
+                $findst = Students::where('student_id',$row['ma_sv'])->first();           
+                if(!empty($findst)){
+                    $count += 1;
+                    $erstt .= '/Mã sinh viên đã tồn tại';
                 }
                 else{
-                    $findgr = Grades::where('name',$row['khoi'])->first();
-                    if(empty($findgr)){
+                    $findcl = Classes::where('name',$row['lop'])->first();
+                    if(empty($findcl)){
                         $count += 1;
-                        $erstt .= 'Khối không tồn tại';
+                        $erstt .= '/Lớp không tồn tại';
                     }
-                    elseif($findgr->id != $findcl->grade_id){
-                        $count += 1;
-                        $erstt .= 'Khối và lớp không quan hệ';
+                    else{
+                        $findgr = Grades::where('name',$row['khoi'])->first();
+                        if(empty($findgr)){
+                            $count += 1;
+                            $erstt .= '/Khối không tồn tại';
+                        }
+                        elseif($findgr->id != $findcl->grade_id){
+                            $count += 1;
+                            $erstt .= '/Khối và lớp không quan hệ';
+                        }
                     }
                 }
+
+                $new['Error'] = $erstt;
+                unset($new['FirstName']);
+                $students[] = $new;
             }
 
-            $new['Error'] = $erstt;
-            $students[] = $new;
+            $rs = [];
+            $rs['ErrorCount'] = $count;
+            $rs['File'] = $filename;
+            if($count > 0){
+                $rs['File'] = '';
+                Storage::disk('public_uploads')->delete($filename);
+            }
+            $rs['Students'] = $students;
+            return response()->json($rs);
         }
-
-        $rs = [];
-        $rs['ErrorCount'] = $count;
-        $rs['File'] = $filename;
-        if($count > 0){
-            $rs['File'] = '';
-            Storage::disk('public_uploads')->delete($filename);
+        else{
+            return response()->json(['error'=>'Không đọc được file']);
         }
-        $rs['Students'] = $students;
-        return response()->json($rs);
+        
     }
 
     public function import(Request $request,$filename){
@@ -94,8 +163,8 @@ class StudentsController extends Controller
         foreach($data as $row ){
             $new = new Students();
             $new->student_id = $row['ma_sv'];
-            $new->name = $row['ho_ten_sinh_vien'].$row['ten'];
-            $new->dob = date('Y-m-d', strtotime($row['ngay_sinh']));
+            $new->name = $row['ho_ten_sinh_vien'].' '.$row['ten'];
+            $new->dob = date('Y-m-d', strtotime(str_replace('/','-',$row['ngay_sinh'])));
             switch ($row['phai']){
                 case 'Nam':
                     $new->gender = 1;
@@ -103,7 +172,6 @@ class StudentsController extends Controller
                 case 'Nữ':
                     $new->gender = 2;
                     break;
-                
                 default:
                     $new->gender = 0;
                     break;
@@ -148,31 +216,50 @@ class StudentsController extends Controller
     }
 
     public function update(Request $request){
-        $db = Students::find($request['Id']);
         $messages = [
             'Id.required' => 'Id không được trống',
             'student_id.unique' => 'Mã sinh viên đã sử dụng',
             'student_id.required' => 'Mã sinh viên không để trống',
+            'student_id.not_regex' => 'Mã sinh viên sai định dạng',
             'Name.required' => 'Họ và tên không để trống',
+            'Name.not_regex' => 'Họ và tên sai định dạng',
             'Dob.required' => 'Ngày sinh không để trống',
             'Dob.date' => 'Ngày sinh không đúng định dạng',
             'Gender.required' => 'Phái không để trống',
+            'Gender.in' => 'Phái không tồn tại',
             'ClassId.required' => 'Lóp không để trống',
             'GradeId.required' => 'Khối không để trống',
             'Status.required' => 'Trạng thái không để trống',
+            'Gender.in' => 'Trạng thái không tồn tại',
         ];
+        //validate id account
+        $validator2 = Validator::make($request->all(), [
+            'Id' => array(
+                'required',
+                'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+            ),
+        ], $messages);
+        if($validator2->fails()){
+           return $validator2->errors();
+        }
+        $db = Students::find($request['Id']);
+        
         $validator = Validator::make($request->all(), [
             'Id' => 'required',
             'student_id' => [
                 'required',
                 Rule::unique('students')->ignore($db->student_id,"student_id"),
+                'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
             ],
-            'Name' => 'required',
+            'Name' => array(
+                'required',
+                'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+            ),
             'Dob' => 'required|date',
-            'Gender' => 'required|numeric',
+            'Gender' => 'required|numeric|in:0,1,2',
             'ClassId' => 'required|numeric',
             'GradeId' => 'required|numeric',
-            'Status' => 'required|numeric',
+            'Status' => 'required|numeric|in:0,1',
         ],$messages);
 
         if($validator->fails()){
