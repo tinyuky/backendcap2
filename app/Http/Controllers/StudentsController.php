@@ -51,7 +51,7 @@ class StudentsController extends Controller
             'Grade.required' => 'Khối không để trống',
             'Grade.not_regex' => 'Khối sai định dạng',
         ];
-        if(isset($data)){
+        if(count($data)>0){
             // check data
             foreach($data as $row ){
                 $erstt = '';
