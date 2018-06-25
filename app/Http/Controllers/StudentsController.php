@@ -70,14 +70,17 @@ class StudentsController extends Controller
                     'Student_id' => [
                         'required',
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                        'not_regex:/\s/s',
                     ],
                     'Name' => array(
                         'required',
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                        'regex:/[A-Za-z]+([\s{2,}\t{0,}][A-Za-z]+)/s',
                     ),
                     'FirstName' => array(
                         'required',
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                        'not_regex:/\s/s',
                     ),
                     'Dob' => 'required|date',
                     'Gender' => array(
@@ -87,10 +90,12 @@ class StudentsController extends Controller
                     'Class' => array(
                         'required',
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                        'not_regex:/\s/s',
                     ),
                     'Grade' => array(
                         'required',
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                        'not_regex:/\s/s',
                     ),
                 ],$messages);
                 // if($validator->fails()){

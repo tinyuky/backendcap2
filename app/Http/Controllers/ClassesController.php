@@ -16,6 +16,7 @@ class ClassesController extends Controller
             'Name.required' => 'Tên lớp không để trống',
             'Name.not_regex' => 'Tên lớp không đúng định dạng',
             'Name.unique' => 'Tên lớp đã sử dụng',
+            'Name.regex' => 'Họ và tên không đúng định dạng',
             'GradeId.required' => 'Mã khối không được để trống',
             'GraId.numeric' => 'Mã khối không đúng định dạng',
         ];
@@ -25,6 +26,7 @@ class ClassesController extends Controller
                 'required',
                 'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
                 'unique:classes,name',
+                'not_regex:/\s/s',
             ),
             'GradeId' => 'required|numeric',
         ], $messages);
@@ -45,6 +47,7 @@ class ClassesController extends Controller
             'Name.required' => 'Tên lớp không để trống',
             'Name.not_regex' => 'Tên lớp không đúng định dạng',
             'Name.unique' => 'Tên lớp đã sử dụng',
+            'Name.regex' => 'Họ và tên không đúng định dạng',
             'GradeId.required' => 'Mã khối không được để trống',
             'GraId.numeric' => 'Mã khối không đúng định dạng',
         ];
@@ -66,6 +69,7 @@ class ClassesController extends Controller
                 'required',
                 'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
                 Rule::unique('classes')->ignore($db->id),
+                'not_regex:/\s/s',
             ),
             'GradeId' => 'required|numeric',
         ], $messages);

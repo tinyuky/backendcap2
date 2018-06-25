@@ -16,6 +16,7 @@ class GradesController extends Controller
             'Name.required' => 'Tên khối không để trống',
             'Name.not_regex' => 'Tên khối không đúng định dạng',
             'Name.unique' => 'Tên khối đã sử dụng',
+            'Name.regex' => 'Họ và tên không đúng định dạng',
         ];
         // validate data
         $validator = Validator::make($request->all(), [
@@ -23,6 +24,7 @@ class GradesController extends Controller
                 'required',
                 'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
                 'unique:grades,name',
+                'not_regex:/\s/s',
             ),
         ], $messages);
         if($validator->fails()){
@@ -41,6 +43,7 @@ class GradesController extends Controller
             'Name.required' => 'Tên khối không để trống',
             'Name.not_regex' => 'Tên khối không đúng định dạng',
             'Name.unique' => 'Tên khối đã sử dụng',
+            'Name.regex' => 'Họ và tên không đúng định dạng',
         ];
         $validator2 = Validator::make($request->all(), [
             'Id' => array(
@@ -60,6 +63,7 @@ class GradesController extends Controller
                 'required',
                 'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
                 Rule::unique('grades')->ignore($db->id),
+                'not_regex:/\s/s',
             ),
         ], $messages);
         if($validator->fails()){
