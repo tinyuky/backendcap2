@@ -79,10 +79,8 @@ class AdminController extends Controller
             'Phone1' => 'required|numeric',
             'Phone2' => 'required|numeric',
             'Role' => 'required|in:admin,assistant,student,studentservice,board,lecturer',
-        ], $messages);
-        if($validator->fails()){
-           return $validator->errors();
-        }
+        ], $messages)->validate();
+        
 
         //Add account to database
         $user = new User;
@@ -136,10 +134,10 @@ class AdminController extends Controller
                 'required',
                 'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
             ),
-        ], $messages);
-        if($validator2->fails()){
-           return $validator2->errors();
-        }
+        ], $messages)->validate();
+        // if($validator2->fails()){
+        //    return $validator2->errors();
+        // }
 
         // get account
         $user = User::find($request->input('Id'));
@@ -174,12 +172,12 @@ class AdminController extends Controller
             ),
             'Phone1' => 'required|numeric',
             'Phone2' => 'required|numeric',
-            'Role' => 'required|in:admin,assistant,student,studentservice,board,lecturer',
+            'Role' => 'required|in:admin,assistant,student/parent,officer,board,lecturer',
             'Status' => 'required|numeric|in:0,1',
-        ], $messages);
-        if($validator->fails()){
-           return $validator->errors();
-        }
+        ], $messages)->validate();
+        // if($validator->fails()){
+        //    return $validator->errors();
+        // }
 
         //save data to database
         $user->staffid = $request->input('StaffId');

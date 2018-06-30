@@ -26,10 +26,10 @@ class GradesController extends Controller
                 'unique:grades,name',
                 'not_regex:/\s/s',
             ),
-        ], $messages);
-        if($validator->fails()){
-           return $validator->errors();
-        }
+        ], $messages)->validate();
+        // if($validator->fails()){
+        //    return $validator->errors();
+        // }
 
         $db = new Grades();
         $db->name = $request->input('Name');
@@ -50,10 +50,10 @@ class GradesController extends Controller
                 'required',
                 'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
             ),
-        ], $messages);
-        if($validator2->fails()){
-           return $validator2->errors();
-        }
+        ], $messages)->validate();
+        // if($validator2->fails()){
+        //    return $validator2->errors();
+        // }
         
         $db = Grades::find($request['Id']);
 
@@ -65,10 +65,10 @@ class GradesController extends Controller
                 Rule::unique('grades')->ignore($db->id),
                 'not_regex:/\s/s',
             ),
-        ], $messages);
-        if($validator->fails()){
-           return $validator->errors();
-        }
+        ], $messages)->validate();
+        // if($validator->fails()){
+        //    return $validator->errors();
+        // }
         $db = Grades::find($request['Id']);
         $db->name = $request->input('Name');
         $db->save();

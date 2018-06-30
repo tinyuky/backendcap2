@@ -243,10 +243,10 @@ class StudentsController extends Controller
                 'required',
                 'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
             ),
-        ], $messages);
-        if($validator2->fails()){
-           return $validator2->errors();
-        }
+        ], $messages)->validate();
+        // if($validator2->fails()){
+        //    return $validator2->errors();
+        // }
         $db = Students::find($request['Id']);
         
         $validator = Validator::make($request->all(), [
@@ -265,11 +265,11 @@ class StudentsController extends Controller
             'ClassId' => 'required|numeric',
             'GradeId' => 'required|numeric',
             'Status' => 'required|numeric|in:0,1',
-        ],$messages);
+        ],$messages)->validate();
 
-        if($validator->fails()){
-           return $validator->errors();
-        }
+        // if($validator->fails()){
+        //    return $validator->errors();
+        // }
 
         $db->student_id = $request->input('student_id');
         $db->name = $request->input('Name');

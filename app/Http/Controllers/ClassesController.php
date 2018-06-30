@@ -29,10 +29,10 @@ class ClassesController extends Controller
                 'not_regex:/\s/s',
             ),
             'GradeId' => 'required|numeric',
-        ], $messages);
-        if($validator->fails()){
-           return $validator->errors();
-        }
+        ], $messages)->validate();
+        // if($validator->fails()){
+        //    return $validator->errors();
+        // }
         // add data to database
         $db = new Classes();
         $db->name = $request->input('Name');
@@ -56,10 +56,10 @@ class ClassesController extends Controller
                 'required',
                 'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
             ),
-        ], $messages);
-        if($validator2->fails()){
-           return $validator2->errors();
-        }
+        ], $messages)->validate();
+        // if($validator2->fails()){
+        //    return $validator2->errors();
+        // }
         
         $db = Classes::find($request['Id']);
 
@@ -72,10 +72,10 @@ class ClassesController extends Controller
                 'not_regex:/\s/s',
             ),
             'GradeId' => 'required|numeric',
-        ], $messages);
-        if($validator->fails()){
-           return $validator->errors();
-        }
+        ], $messages)->validate();
+        // if($validator->fails()){
+        //    return $validator->errors();
+        // }
 
         
         $db->name = $request->input('Name');
