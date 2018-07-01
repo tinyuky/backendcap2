@@ -20,6 +20,7 @@ class CreateCourseManagemmentTable extends Migration
             $table->integer('dvht')->nullable();
             $table->integer('tong_tiet')->nullable();
             $table->integer('lt')->nullable();
+            $table->integer('bt')->nullable();
             $table->integer('th')->nullable();
             $table->timestamps();
         });

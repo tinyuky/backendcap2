@@ -39,6 +39,12 @@ Route::group([
     Route::get('getStudent/{id}','StudentsController@get');
     Route::get('getAllStudents','StudentsController@getall');
     Route::get('undoStudents','StudentsController@undo');
+
+    Route::post('handleCourse','CoursesController@handle');
+    Route::get('importCourse/{name}','CoursesController@import');  
+    Route::post('updateCourse','CoursesController@update');
+    Route::get('getCourse/{id}','CoursesController@get');
+    Route::get('getAllCourses','CoursesController@getall');  
 });
 
 

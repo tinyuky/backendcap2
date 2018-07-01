@@ -15,6 +15,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use JWTAuth;
 use Validator;
 use Illuminate\Validation\Rule;
+use Config;
 
 class StudentsController extends Controller
 {
@@ -26,8 +27,10 @@ class StudentsController extends Controller
         // save file
         Storage::disk('public_uploads')->put($filename, File::get($file));
         // read file
+        Config::set('excel.import.startRow',8);
         $data = Excel::load(Storage::disk('public_uploads')->getDriver()->getAdapter()->getPathPrefix().$filename, function($reader) {
         })->get();
+
         // create array to store data
         $students = [];
         $count = 0;
