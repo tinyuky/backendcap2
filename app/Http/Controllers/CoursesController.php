@@ -35,6 +35,7 @@ class CoursesController extends Controller
         // create array to store data
         $students = [];
         $count = 0;
+        $valid = 0;
 
         // message for validate
         $messages = [
@@ -66,60 +67,60 @@ class CoursesController extends Controller
                     $new['BT'] = trim($row['bt']);
                     $new['TH'] = trim($row['th']);
                     //validate data
-                $validator = Validator::make($new, [
-                    'STT' => [
-                        'nullable',
-                        'numeric',
-                    ],
-                    'Name' => array(
-                        'required',
-                        'not_regex:/\`|\~|\!|\@|\$|\%|\^|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;/s',
-                        'regex:/^\S+(\s\S+)+$/s',
-                        'unique:courses,name'
-                    ),
-                    'MaMH' => array(
-                        'nullable',
-                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
-                    ),
-                    'DVHTTC' => [
-                        'required',
-                        'numeric',
-                    ],
-                    'Tongtiet' => [
-                        'required',
-                        'numeric',
-                    ],
-                    'LT' => [
-                        'nullable',
-                        'numeric',
-                    ],
-                    'BT' => [
-                        'nullable',
-                        'numeric',
-                    ],
-                    'TH' => [
-                        'nullable',
-                        'numeric',
-                    ],
-                ],$messages);
-                
+                    $validator = Validator::make($new, [
+                        'STT' => [
+                            'nullable',
+                            'numeric',
+                        ],
+                        'Name' => array(
+                            'required',
+                            'not_regex:/\`|\~|\!|\@|\$|\%|\^|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;/s',
+                            'regex:/^\S+(\s\S+)+$/s',
+                            'unique:courses,name'
+                        ),
+                        'MaMH' => array(
+                            'nullable',
+                            'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                        ),
+                        'DVHTTC' => [
+                            'required',
+                            'numeric',
+                        ],
+                        'Tongtiet' => [
+                            'required',
+                            'numeric',
+                        ],
+                        'LT' => [
+                            'nullable',
+                            'numeric',
+                        ],
+                        'BT' => [
+                            'nullable',
+                            'numeric',
+                        ],
+                        'TH' => [
+                            'nullable',
+                            'numeric',
+                        ],
+                    ],$messages);
+                    
 
-                if($validator->fails()){
-                    $count += 1;
-                    $aa = $validator->errors()->all();
-                    foreach($aa as $k){
-                        $erstt .= '/'.$k;
+                    if($validator->fails()){
+                        $count += 1;
+                        $aa = $validator->errors()->all();
+                        foreach($aa as $k){
+                            $erstt .= '/'.$k;
+                        }
                     }
-                }
-
-                $new['Error'] = $erstt;
-                
-                $students[] = $new;
+                    $new['Error'] = $erstt;
+                    $students[] = $new;
+                    $valid += 1;
                 }                
             }
 
             $rs = [];
-            $rs['ErrorCount'] = $count;
+            $rs['ErrorCouses'] = $count;
+            $rs['SumCourses'] = $valid;
             $rs['File'] = $filename;
             if($count > 0){
                 $rs['File'] = '';
