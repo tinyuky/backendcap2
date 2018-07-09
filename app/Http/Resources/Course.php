@@ -16,13 +16,14 @@ class Course extends JsonResource
     {
         return [
             'Id' => $this->id,
-            'MaMH'=>$this->ma_mh,
+            'MaMH'=>$this->code,
             'Name' => $this->name,
-            'Code' => $this->code,
+            'DVHT' => $this->dvht,
             'TongTiet' => $this->tong_tiet,
             'LT' => $this->lt,
             'BT' => $this->bt,
             'TH' => $this->th,
+            'HK' => $this->hk,
         ];
     }
 }

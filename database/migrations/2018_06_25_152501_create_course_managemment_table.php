@@ -22,6 +22,7 @@ class CreateCourseManagemmentTable extends Migration
             $table->integer('lt')->nullable();
             $table->integer('bt')->nullable();
             $table->integer('th')->nullable();
+            $table->integer('hk');
             $table->timestamps();
         });
 

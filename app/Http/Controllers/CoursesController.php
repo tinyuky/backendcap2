@@ -51,6 +51,8 @@ class CoursesController extends Controller
             'LT.numeric'=> 'LT không đúng định dạng',
             'BT.numeric'=> 'BT không đúng định dạng',
             'TH.numeric'=> 'TH không đúng định dạng',
+            'HK.required' => 'Học kì không để trống',
+            'HK.numeric' => 'Học kì không đúng định dạng',
         ];
         if(count($data)>0){
             // check data
@@ -66,6 +68,7 @@ class CoursesController extends Controller
                     $new['LT'] = trim($row['lt']);
                     $new['BT'] = trim($row['bt']);
                     $new['TH'] = trim($row['th']);
+                    $new['HK'] = trim($row['hk']);
                     //validate data
                     $validator = Validator::make($new, [
                         'STT' => [
@@ -100,6 +103,10 @@ class CoursesController extends Controller
                         ],
                         'TH' => [
                             'nullable',
+                            'numeric',
+                        ],
+                        'HK' => [
+                            'required',
                             'numeric',
                         ],
                     ],$messages);
@@ -159,6 +166,7 @@ class CoursesController extends Controller
                 if($row['bt']!=""){
                     $new->bt = trim($row['bt']);
                 }
+                $new->hk = trim($row['hk']);
                 $new->save();
             }
             
@@ -243,5 +251,10 @@ class CoursesController extends Controller
 
     public function getall(){
         return CourseResource::collection(Courses::all());
+    }
+
+    public function delete($id){
+        Courses::find($id)->delete();
+        return response()->json(['message'=>'Delete Success'], 200);
     }
 }

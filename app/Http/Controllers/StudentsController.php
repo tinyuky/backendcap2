@@ -78,7 +78,7 @@ class StudentsController extends Controller
                     'Name' => array(
                         'required',
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
-                        'regex:/[A-Za-z]+([\s{2,}\t{0,}][A-Za-z]+)/s',
+                        // 'regex:/[A-Za-z]+([\s{2,}\t{0,}][A-Za-z]+)/s',
                     ),
                     'FirstName' => array(
                         'required',
@@ -158,6 +158,7 @@ class StudentsController extends Controller
     }
 
     public function import(Request $request,$filename){
+        Config::set('excel.import.startRow',8);
         $data = Excel::load(Storage::disk('public_uploads')->getDriver()->getAdapter()->getPathPrefix().$filename, function($reader) {
         })->get();
 
@@ -236,7 +237,6 @@ class StudentsController extends Controller
             'Gender.required' => 'Phái không để trống',
             'Gender.in' => 'Phái không tồn tại',
             'ClassId.required' => 'Lóp không để trống',
-            'GradeId.required' => 'Khối không để trống',
             'Status.required' => 'Trạng thái không để trống',
             'Gender.in' => 'Trạng thái không tồn tại',
         ];
@@ -266,7 +266,6 @@ class StudentsController extends Controller
             'Dob' => 'required|date',
             'Gender' => 'required|numeric|in:0,1,2',
             'ClassId' => 'required|numeric',
-            'GradeId' => 'required|numeric',
             'Status' => 'required|numeric|in:0,1',
         ],$messages)->validate();
 
@@ -280,7 +279,7 @@ class StudentsController extends Controller
         $db->gender = $request->input('Gender');
         $db->status = $request->input('Status');
         $db->class_id = $request->input('ClassId');
-        $db->grade_id = Grades::find($request->input('GradeId'))->id;
+        $db->grade_id = Classes::find($request->input('ClassId'))->grade_id;
         $db->save();
         return response()->json(['message'=>'Update Success'], 200);
     }

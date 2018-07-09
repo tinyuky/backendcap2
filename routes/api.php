@@ -44,7 +44,8 @@ Route::group([
     Route::get('importCourse/{name}','CoursesController@import');  
     Route::post('updateCourse','CoursesController@update');
     Route::get('getCourse/{id}','CoursesController@get');
-    Route::get('getAllCourses','CoursesController@getall');  
+    Route::get('getAllCourses','CoursesController@getall');
+    Route::get('deleteCourse/{id}','CoursesController@delete');  
 });
 
 
