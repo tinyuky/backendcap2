@@ -44,8 +44,8 @@ class CoursesController extends Controller
             'Name.required' => 'Tên môn học không để trống',
             'Name.not_regex' => 'Tên môn học sai định dạng',
             'Name.unique' => 'Tên môn học đã tồn tại',
-            'DVHTTC.numeric'=> 'DVHTTC không đúng định dạng',
-            'DVHTTC.required' => 'DVHTTC không để trống',
+            'DVHT.numeric'=> 'DVHTTC không đúng định dạng',
+            'DVHT.required' => 'DVHTTC không để trống',
             'Tongtiet.numeric'=> 'Tổng tiết không đúng định dạng',
             'Tongtiet.required' => 'Tổng tiết không để trống',
             'LT.numeric'=> 'LT không đúng định dạng',
@@ -63,7 +63,7 @@ class CoursesController extends Controller
                     $new['STT'] = trim($row['stt']);
                     $new['MaMH'] = trim($row['ma_mh']);
                     $new['Name'] = trim($row['ten_mon_hoc']);
-                    $new['DVHTTC'] = trim($row['dvhttc']);
+                    $new['DVHT'] = trim($row['dvhttc']);
                     $new['Tongtiet'] = trim($row['tong_tiet']);
                     $new['LT'] = trim($row['lt']);
                     $new['BT'] = trim($row['bt']);
@@ -85,7 +85,7 @@ class CoursesController extends Controller
                             'nullable',
                             'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
                         ),
-                        'DVHTTC' => [
+                        'DVHT' => [
                             'required',
                             'numeric',
                         ],
@@ -182,8 +182,8 @@ class CoursesController extends Controller
             'Name.required' => 'Tên môn học không để trống',
             'Name.not_regex' => 'Tên môn học sai định dạng',
             'Name.unique' => 'Tên môn học đã tồn tại',
-            'DVHTTC.numeric'=> 'DVHTTC không đúng định dạng',
-            'DVHTTC.required' => 'DVHTTC không để trống',
+            'DVHT.numeric'=> 'DVHTTC không đúng định dạng',
+            'DVHT.required' => 'DVHTTC không để trống',
             'TongTiet.numeric'=> 'Tổng tiết không đúng định dạng',
             'TongTiet.required' => 'Tổng tiết không để trống',
             'LT.numeric'=> 'LT không đúng định dạng',
@@ -212,7 +212,7 @@ class CoursesController extends Controller
                         'nullable',
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
                     ),
-            'DVHTTC' => [
+            'DVHT' => [
                 'required',
                 'numeric',
             ],
@@ -236,7 +236,7 @@ class CoursesController extends Controller
 
         $db->code = $request->input('Code');
         $db->name = $request->input('Name');
-        $db->dvht = $request->input('DVHTTC');
+        $db->dvht = $request->input('DVHT');
         $db->tong_tiet = $request->input('TongTiet');
         $db->lt = $request->input('LT');
         $db->bt = $request->input('BT');
