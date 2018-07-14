@@ -65,7 +65,7 @@ class StudentsController extends Controller
                 $new['FirstName'] = $row['ten'];
                 $new['Dob'] = str_replace('/','-',$row['ngay_sinh']);
                 $new['Class'] = $row['lop'];
-                $new['Grade'] = $row['khoi'];
+                // $new['Grade'] = $row['khoi'];
                 $new['Gender'] = $row['phai'];
             
                 //validate data
@@ -95,11 +95,11 @@ class StudentsController extends Controller
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
                         'not_regex:/\s/s',
                     ),
-                    'Grade' => array(
-                        'required',
-                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
-                        'not_regex:/\s/s',
-                    ),
+                    // 'Grade' => array(
+                    //     'required',
+                    //     'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                    //     'not_regex:/\s/s',
+                    // ),
                 ],$messages);
                 // if($validator->fails()){
                 //     return $validator->errors();
@@ -123,17 +123,17 @@ class StudentsController extends Controller
                         $count += 1;
                         $erstt .= '/Lớp không tồn tại';
                     }
-                    else{
-                        $findgr = Grades::where('name',$row['khoi'])->first();
-                        if(empty($findgr)){
-                            $count += 1;
-                            $erstt .= '/Khối không tồn tại';
-                        }
-                        elseif($findgr->id != $findcl->grade_id){
-                            $count += 1;
-                            $erstt .= '/Khối và lớp không quan hệ';
-                        }
-                    }
+                    // else{
+                    //     $findgr = Grades::where('name',$row['khoi'])->first();
+                    //     if(empty($findgr)){
+                    //         $count += 1;
+                    //         $erstt .= '/Khối không tồn tại';
+                    //     }
+                    //     elseif($findgr->id != $findcl->grade_id){
+                    //         $count += 1;
+                    //         $erstt .= '/Khối và lớp không quan hệ';
+                    //     }
+                    // }
                 }
 
                 $new['Error'] = $erstt;
@@ -187,7 +187,7 @@ class StudentsController extends Controller
             }  
             $grade = Grades::where('name',$row['khoi'])->first();
             $class = Classes::where('name',$row['lop'])->first();
-            $new->grade_id = $grade->id;
+            // $new->grade_id = $grade->id;
             $new->class_id = $class->id;
             $new->status = 1;
             $new->save();
@@ -204,25 +204,25 @@ class StudentsController extends Controller
         return response()->json('Add success');
     }
 
-    public function undo(Request $request){
-        $user = JWTAuth::parseToken()->authenticate($request);
-        $students = Logs::select('student_id')->where([
-            ['user_id',$user->id],
-            ['status','1']
-        ])->get();
-        Students::whereIn('student_id',$students)->delete();
-        Logs::whereIn('student_id',$students)->update(['status' => 0]); 
-        foreach ($students as $key) {
-            $newlog = new Logs();
-            $newlog->student_id = $key->student_id;
-            $newlog->action = "remove";
-            $newlog->status = '0';
+    // public function undo(Request $request){
+    //     $user = JWTAuth::parseToken()->authenticate($request);
+    //     $students = Logs::select('student_id')->where([
+    //         ['user_id',$user->id],
+    //         ['status','1']
+    //     ])->get();
+    //     Students::whereIn('student_id',$students)->delete();
+    //     Logs::whereIn('student_id',$students)->update(['status' => 0]); 
+    //     foreach ($students as $key) {
+    //         $newlog = new Logs();
+    //         $newlog->student_id = $key->student_id;
+    //         $newlog->action = "remove";
+    //         $newlog->status = '0';
             
-            $newlog->user_id = $user->id;
-            $newlog->save();
-        }
-        return response()->json('Undo success');
-    }
+    //         $newlog->user_id = $user->id;
+    //         $newlog->save();
+    //     }
+    //     return response()->json('Undo success');
+    // }
 
     public function update(Request $request){
         $messages = [
@@ -279,7 +279,7 @@ class StudentsController extends Controller
         $db->gender = $request->input('Gender');
         $db->status = $request->input('Status');
         $db->class_id = $request->input('ClassId');
-        $db->grade_id = Classes::find($request->input('ClassId'))->grade_id;
+        // $db->grade_id = Classes::find($request->input('ClassId'))->grade_id;
         $db->save();
         return response()->json(['message'=>'Update Success'], 200);
     }

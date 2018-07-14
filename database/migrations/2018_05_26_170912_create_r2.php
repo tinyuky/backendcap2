@@ -34,10 +34,8 @@ class CreateR2 extends Migration
             $table->date('dob');
             $table->boolean('status');
             $table->integer('gender');
-            $table->integer('class_id')->unsigned();
-            $table->integer('grade_id')->unsigned();              
+            $table->integer('class_id')->unsigned();           
             $table->foreign('class_id')->references('id')->on('classes');
-            $table->foreign('grade_id')->references('id')->on('grades');
             $table->timestamps();
         });
     }
