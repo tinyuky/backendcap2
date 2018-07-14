@@ -18,6 +18,7 @@ use Illuminate\Validation\Rule;
 use Config;
 use App\Courses;
 use App\Http\Resources\Course as CourseResource;
+use App\Rules\CourseUnique;
 
 class CoursesController extends Controller
 {
@@ -213,11 +214,10 @@ class CoursesController extends Controller
         
         
         $db = Courses::find($request['Id']);
-        
+
         $validator = Validator::make($request->all(), [
             'Name' => [
                 'required',
-                Rule::unique('courses')->ignore($db->id),
                 'not_regex:/\`|\~|\!|\@|\$|\%|\^|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;/s',
                 'regex:/^\S+(\s\S+)+$/s',
             ],
@@ -245,8 +245,26 @@ class CoursesController extends Controller
                 'nullable',
                 'numeric',
             ],
+            'HK' => [
+                'required',
+                'numeric',
+            ],
+            'GradeId' => [
+                'required',
+                'numeric',
+            ],
         ],$messages)->validate();
 
+        //Check 4 column unique
+        $dbunique = $db->code.$db->name.$db->hk.$db->grade_id;
+        $rsunique = $request['Code'].$request['Name'].$request['HK'].$request['GradeId'];
+        if( $dbunique != $rsunique ){
+            $request->request->add(['unique'=> $rsunique]);
+            $request->validate([
+                'unique'=> new CourseUnique(),
+            ]);
+        }
+        
         $db->code = $request->input('Code');
         $db->name = $request->input('Name');
         $db->dvht = $request->input('DVHT');
@@ -254,6 +272,8 @@ class CoursesController extends Controller
         $db->lt = $request->input('LT');
         $db->bt = $request->input('BT');
         $db->th = $request->input('TH');
+        $db->hk = $request->input('HK');
+        $db->grade_id = $request->input('GradeId');
         $db->save();
         return response()->json(['message'=>'Update Success'], 200);
     }
