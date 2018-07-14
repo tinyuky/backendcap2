@@ -3,9 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\CoursesPlans;
+use App\Http\Resources\Students;
 
-class GradePlan extends JsonResource
+class Logs extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +15,12 @@ class GradePlan extends JsonResource
      */
     public function toArray($request)
     {
-        $this->resource->load('courses');
+        $this->resource->load('students');
         return [
             'Id' => $this->id,
             'Name' => $this->name,
-            'Courses'=> CoursesPlans::collection($this->whenLoaded('courses')),
+            'Date' => $this->created_at->toDateString(),
+            'Students' => Students::collection($this->whenLoaded('students')),
         ];
     }
 }

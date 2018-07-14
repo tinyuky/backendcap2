@@ -38,7 +38,6 @@ Route::group([
     Route::post('updateStudent','StudentsController@update');
     Route::get('getStudent/{id}','StudentsController@get');
     Route::get('getAllStudents','StudentsController@getall');
-    Route::get('undoStudents','StudentsController@undo');
 
     Route::post('handleCourse','CoursesController@handle');
     Route::get('importCourse/{name}/{grade_id}','CoursesController@import');  
@@ -48,10 +47,13 @@ Route::group([
     Route::get('deleteCourse/{id}','CoursesController@delete');
     
     Route::get('getCourseInPlan/{grade_id}/{hk}','GradesPlansController@getCourses');
-    Route::get('getGradePlan/{id}','GradesPlansController@get');
-    Route::get('getAllGradePlans','GradesPlansController@getall');
-    Route::post('createGradePlan','GradesPlansController@create');
-    Route::post('updateGradePlan','GradesPlansController@update');
+    Route::get('getEducationPlan/{id}','GradesPlansController@get');
+    Route::get('getAllEducationPlans','GradesPlansController@getall');
+    Route::post('createEducationPlan','GradesPlansController@create');
+    Route::post('updateEducationPlan','GradesPlansController@update');
+
+    Route::get('getAllLogs','LogController@getall');
+    Route::get('undoLogs/{id}','LogController@undo');
 });
 
 

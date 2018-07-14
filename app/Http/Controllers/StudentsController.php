@@ -65,7 +65,6 @@ class StudentsController extends Controller
                 $new['FirstName'] = $row['ten'];
                 $new['Dob'] = str_replace('/','-',$row['ngay_sinh']);
                 $new['Class'] = $row['lop'];
-                // $new['Grade'] = $row['khoi'];
                 $new['Gender'] = $row['phai'];
             
                 //validate data
@@ -95,15 +94,8 @@ class StudentsController extends Controller
                         'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
                         'not_regex:/\s/s',
                     ),
-                    // 'Grade' => array(
-                    //     'required',
-                    //     'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
-                    //     'not_regex:/\s/s',
-                    // ),
                 ],$messages);
-                // if($validator->fails()){
-                //     return $validator->errors();
-                // }
+                
                 if($validator->fails()){
                     $count += 1;
                     $aa = $validator->errors()->all();
@@ -123,17 +115,6 @@ class StudentsController extends Controller
                         $count += 1;
                         $erstt .= '/Lớp không tồn tại';
                     }
-                    // else{
-                    //     $findgr = Grades::where('name',$row['khoi'])->first();
-                    //     if(empty($findgr)){
-                    //         $count += 1;
-                    //         $erstt .= '/Khối không tồn tại';
-                    //     }
-                    //     elseif($findgr->id != $findcl->grade_id){
-                    //         $count += 1;
-                    //         $erstt .= '/Khối và lớp không quan hệ';
-                    //     }
-                    // }
                 }
 
                 $new['Error'] = $erstt;
@@ -169,6 +150,12 @@ class StudentsController extends Controller
             $key->save();
         }
 
+        $newlog = new Logs();
+            $newlog->name = 'Danh sách sinh viên';
+            $newlog->option = "students";
+            $newlog->user_id = $user->id;
+            $newlog->save();
+
         foreach($data as $row ){
             $new = new Students();
             $new->student_id = $row['ma_sv'];
@@ -187,42 +174,14 @@ class StudentsController extends Controller
             }  
             $grade = Grades::where('name',$row['khoi'])->first();
             $class = Classes::where('name',$row['lop'])->first();
-            // $new->grade_id = $grade->id;
+            $new->log_id = $newlog->id;
             $new->class_id = $class->id;
             $new->status = 1;
             $new->save();
-
-            $newlog = new Logs();
-            $newlog->student_id = $new->student_id;
-            $newlog->action = "add";
-            $newlog->status = '1';
-            
-            $newlog->user_id = $user->id;
-            $newlog->save();
         }
         Storage::disk('public_uploads')->delete($filename);
         return response()->json('Add success');
     }
-
-    // public function undo(Request $request){
-    //     $user = JWTAuth::parseToken()->authenticate($request);
-    //     $students = Logs::select('student_id')->where([
-    //         ['user_id',$user->id],
-    //         ['status','1']
-    //     ])->get();
-    //     Students::whereIn('student_id',$students)->delete();
-    //     Logs::whereIn('student_id',$students)->update(['status' => 0]); 
-    //     foreach ($students as $key) {
-    //         $newlog = new Logs();
-    //         $newlog->student_id = $key->student_id;
-    //         $newlog->action = "remove";
-    //         $newlog->status = '0';
-            
-    //         $newlog->user_id = $user->id;
-    //         $newlog->save();
-    //     }
-    //     return response()->json('Undo success');
-    // }
 
     public function update(Request $request){
         $messages = [
@@ -295,7 +254,6 @@ class StudentsController extends Controller
             'Grade'=> $student->grade->name,
             'Status'=> $student->status,
             'ClassId'=> $student->class_id,
-            'GradeId'=> $student->grade_id,
         ];
         return response()->json($rs);
     }
@@ -313,7 +271,6 @@ class StudentsController extends Controller
                 'Grade'=> $student->grade->name,
                 'Status'=> $student->status,
                 'ClassId'=> $student->class_id,
-                'GradeId'=> $student->grade_id,
             ];
             $rs[] = $row;
         }

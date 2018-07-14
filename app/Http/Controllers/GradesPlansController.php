@@ -13,7 +13,7 @@ use App\Http\Resources\GradePlan as GradePlanResource;
 class GradesPlansController extends Controller
 {
     public function create(Request $request){
-        $input = $request->input('data');
+        $input = $request->input('Data');
         $input = json_decode($input);
         $plan = new Grades_Plans();
         $plan->name = $input['Name'];
@@ -31,7 +31,7 @@ class GradesPlansController extends Controller
     }
 
     public function update(Request $request){
-        $input = $request->input('data');
+        $input = $request->input('Data');
         $input = json_decode($input);
 
         $plan = Grades_Plans::find($rquest->input('Id'));

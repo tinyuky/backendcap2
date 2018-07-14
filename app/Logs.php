@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Logs extends Model
 {
-    protected $table = 'log';
+    protected $table = 'logs';
     protected $fillable = [
-        'student_id','action','status','user_id'
+        'name','option','user_id'
     ];
     protected $hidden = [
         'created_at', 'updated_at',
     ];
-    public $timestamps = false;
+    public function students(){
+        return $this->hasMany('App\Students','log_id','id');
+    }
 }

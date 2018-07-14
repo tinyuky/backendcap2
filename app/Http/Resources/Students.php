@@ -17,14 +17,12 @@ class Students extends JsonResource
     public function toArray($request)
     {
         $this->resource->load('class');
-        $this->resource->load('grade');
         return [
             'Id'=> $this->id,
             'StudentId' => $this->student_id,
             'Name' => $this->name,
+            'Dob' =>$this->dob,
             'Gender' => $this->gender,
-            'Class'=> Classes::collection($this->whenLoaded('class')->id),
-            'Grade'=> Grades::collection($this->whenLoaded('grade')->id),
             'Status'=> $this->status,
         ];
     }
