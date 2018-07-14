@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Course;
+use App\Http\Resources\CoursesPlans;
 
 class GradePlan extends JsonResource
 {
@@ -19,7 +19,7 @@ class GradePlan extends JsonResource
         return [
             'Id' => $this->id,
             'Name' => $this->name,
-            'Courses'=>Course::collection($this->whenLoaded('courses')),
+            'Courses'=>CoursesPlans::collection($this->whenLoaded('courses')),
         ];
     }
 }
