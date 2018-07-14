@@ -41,7 +41,7 @@ Route::group([
     Route::get('undoStudents','StudentsController@undo');
 
     Route::post('handleCourse','CoursesController@handle');
-    Route::get('importCourse/{name}','CoursesController@import');  
+    Route::get('importCourse/{name}/{grade_id}','CoursesController@import');  
     Route::post('updateCourse','CoursesController@update');
     Route::get('getCourse/{id}','CoursesController@get');
     Route::get('getAllCourses','CoursesController@getall');

@@ -19,4 +19,12 @@ class Courses extends Model
     protected $hidden = [
         'created_at', 'updated_at',
     ];
+
+    public function grade(){
+        return belongsTo('App\Grades');
+    }
+
+    public function grades_plans(){
+        return belongsToMany('App\Grades_Plans');
+    }
 }

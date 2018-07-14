@@ -33,7 +33,7 @@ class CreateR2 extends Migration
             $table->string('name');
             $table->date('dob');
             $table->boolean('status');
-            $table->integer('gender',1);
+            $table->integer('gender');
             $table->integer('class_id')->unsigned();
             $table->integer('grade_id')->unsigned();              
             $table->foreign('class_id')->references('id')->on('classes');

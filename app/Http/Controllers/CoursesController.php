@@ -21,6 +21,8 @@ use App\Http\Resources\Course as CourseResource;
 
 class CoursesController extends Controller
 {
+    private $coureslist;
+
     public function handle(Request $request){
         // return $request;
         // get file
@@ -53,9 +55,13 @@ class CoursesController extends Controller
             'TH.numeric'=> 'TH không đúng định dạng',
             'HK.required' => 'Học kì không để trống',
             'HK.numeric' => 'Học kì không đúng định dạng',
+            'GradeId.required' => 'Khối không để trống',
+            'GradeId.numeric' => 'Khối không đúng định dạng',
         ];
         if(count($data)>0){
             // check data
+            $list = $this->getCheckList();
+
             foreach($data as $row ){
                 $erstt = '';
                 $new = [];
@@ -69,6 +75,7 @@ class CoursesController extends Controller
                     $new['BT'] = trim($row['bt']);
                     $new['TH'] = trim($row['th']);
                     $new['HK'] = trim($row['hk']);
+                    
                     //validate data
                     $validator = Validator::make($new, [
                         'STT' => [
@@ -79,11 +86,10 @@ class CoursesController extends Controller
                             'required',
                             'not_regex:/\`|\~|\!|\@|\$|\%|\^|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;/s',
                             'regex:/^\S+(\s\S+)+$/s',
-                            'unique:courses,name'
                         ),
                         'MaMH' => array(
                             'nullable',
-                            'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                            'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',    
                         ),
                         'DVHT' => [
                             'required',
@@ -119,11 +125,17 @@ class CoursesController extends Controller
                             $erstt .= '/'.$k;
                         }
                     }
+                    $checkunique = trim($row['ma_mh']).trim($row['ten_mon_hoc']).trim($row['hk']).$request->input('GradeId');
+                    if($this->validateUniques($checkunique,$list)){
+                        $count += 1;
+                        $erstt .= '/Môn học đã tồn tại';
+                    }
                     $new['Error'] = $erstt;
                     $students[] = $new;
                     $valid += 1;
                 }                
             }
+            
 
             $rs = [];
             $rs['ErrorCouses'] = $count;
@@ -141,7 +153,7 @@ class CoursesController extends Controller
         }
     }
 
-    public function import(Request $request,$filename){
+    public function import(Request $request,$filename,$grade_id){
         Config::set('excel.import.startRow',6);
         $data = Excel::selectSheets('CTDT_HK1')->load(Storage::disk('public_uploads')->getDriver()->getAdapter()->getPathPrefix().$filename, function($reader) {
         })->get();
@@ -167,6 +179,7 @@ class CoursesController extends Controller
                     $new->bt = trim($row['bt']);
                 }
                 $new->hk = trim($row['hk']);
+                $new->grade_id = $grade_id;
                 $new->save();
             }
             
@@ -256,5 +269,20 @@ class CoursesController extends Controller
     public function delete($id){
         Courses::find($id)->delete();
         return response()->json(['message'=>'Delete Success'], 200);
+    }
+
+    //Check list for 4 column Courses: code, name, hk, grade_id
+    private function getCheckList(){
+        $list = Courses::all();
+        $rs = [];
+        foreach ($list as $row) {
+            $rs[] = $row->code.$row->name.$row->hk.$row->grade_id;
+        }
+        return $rs;
+    }
+
+    //check unique
+    private function validateUniques($value,$list){
+        return in_array($value,$list);
     }
 }

@@ -15,24 +15,18 @@ class CreateCourseManagemmentTable extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code')->unique()->nullable();
-            $table->string('name')->unique();
+            $table->string('code')->nullable();
+            $table->string('name');
             $table->integer('dvht')->nullable();
             $table->integer('tong_tiet')->nullable();
             $table->integer('lt')->nullable();
             $table->integer('bt')->nullable();
             $table->integer('th')->nullable();
             $table->integer('hk');
-            $table->timestamps();
-        });
-
-        Schema::create('courses_grades', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('course_id')->unsigned();         
             $table->integer('grade_id')->unsigned();
-            $table->foreign('course_id')->references('id')->on('courses');
-             $table->foreign('grade_id')->references('id')->on('grades');
+            $table->foreign('grade_id')->references('id')->on('grades');
             $table->timestamps();
+            $table->unique(['code','name','hk','grade_id']);
         });
     }
 
@@ -44,6 +38,5 @@ class CreateCourseManagemmentTable extends Migration
     public function down()
     {
         Schema::dropIfExists('courses');
-        Schema::dropIfExists('courses_grades');
     }
 }
