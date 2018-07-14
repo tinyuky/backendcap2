@@ -20,4 +20,6 @@ class Course_Plans extends Model
         'created_at', 'updated_at',
     ];
 
+    
+
 }

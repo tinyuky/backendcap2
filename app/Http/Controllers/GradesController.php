@@ -78,7 +78,6 @@ class GradesController extends Controller
         return new GradesResource(Grades::find($id));
     }
     public function getall(){
-
         return GradesResource::collection(Grades::orderBy('name','desc')->get());
     }
    

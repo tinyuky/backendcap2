@@ -21,6 +21,6 @@ class Grades_Plans extends Model
     ];
     
     public function courses(){
-        return hasMany('App\Courses');
+        return $this->hasMany('App\Course_Plans','plan_id','id');
     }
 }
