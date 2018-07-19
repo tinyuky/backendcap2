@@ -19,6 +19,7 @@ class GradePlan extends JsonResource
         return [
             'Id' => $this->id,
             'Name' => $this->name,
+            'HK' => $this->hk,
             'Courses'=> CoursesPlans::collection($this->whenLoaded('courses')),
         ];
     }

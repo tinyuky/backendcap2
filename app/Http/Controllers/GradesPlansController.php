@@ -13,19 +13,27 @@ use App\Http\Resources\GradePlan as GradePlanResource;
 class GradesPlansController extends Controller
 {
     public function create(Request $request){
-        $input = $request->input('Data');
-        $input = json_decode($input);
+        $name = $request['Year'];
+        $hk = $request['HK'];
+        $list = $request['List'];
+
         $plan = new Grades_Plans();
-        $plan->name = $input['Name'];
+        $plan->name = $name;
+        $plan->hk = $hk;
         $plan->save();
         
-        $courses = $input['CoursesList'];
-        foreach ($courses as $course) {
-            $row = new Course_Plans();
-            $row->course_id = $course['id'];
-            $row->plan_id = $plan->id;
-            $row->hk = $course['hk'];
-            $row->save();
+        foreach ($list as $key) {
+            $find = Courses::find($key['CourseId'])->get();
+            $add = new Course_Plans();
+            $add->course_id = $key['CourseId'];
+            $add->plan_id = $plan->id;
+            $add->dvht = $find->dhvt;
+            $add->tong_tiet = $find->tong_tiet;
+            $add->lt = $find->lt;
+            $add->bt = $find->bt;
+            $add->th = $find->th;
+            $add->da = $find->da;
+            $add->save();
         }
         return response()->json('Add success');  
     }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 14, 2018 at 09:24 AM
+-- Generation Time: Jul 14, 2018 at 02:07 PM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 7.2.5
 
@@ -36,6 +36,13 @@ CREATE TABLE `classes` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `classes`
+--
+
+INSERT INTO `classes` (`id`, `name`, `grade_id`, `created_at`, `updated_at`) VALUES
+(1, 'K20T01', 1, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -62,26 +69,7 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`id`, `code`, `name`, `dvht`, `tong_tiet`, `lt`, `bt`, `th`, `hk`, `grade_id`, `created_at`, `updated_at`) VALUES
-(1, NULL, 'Software Process & Quality Management', 6, 90, 60, NULL, 30, 1, 1, '2018-07-14 00:18:49', '2018-07-14 00:18:49'),
-(2, NULL, 'Chuyên đề: Lập trình Mobile', 6, 90, 60, NULL, 30, 2, 1, '2018-07-14 00:18:49', '2018-07-14 00:18:49'),
-(3, NULL, 'Anh văn 7', 5, 75, 60, 15, NULL, 3, 1, '2018-07-14 00:18:49', '2018-07-14 00:18:49'),
-(4, NULL, 'Capstone Project', 20, 300, NULL, NULL, NULL, 4, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(5, NULL, 'Phân tích thiết kế hệ thống theo hướng đối tượng', 5, 90, 60, NULL, 30, 5, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(6, NULL, 'Computer Science for Practicing Engineers', 6, 90, 60, NULL, 30, 6, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(7, NULL, 'Software Testing', 6, 90, 60, NULL, 30, 7, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(8, NULL, 'Anh văn chuyên ngành', 5, 75, 75, NULL, NULL, 1, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(9, NULL, 'Software Project Management', 6, 90, 60, 30, NULL, 2, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(10, NULL, 'Application Development Practices', 4, 90, 30, NULL, 60, 3, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(11, NULL, 'Information System Application - Databases', 4, 90, 30, NULL, 60, 4, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(12, NULL, 'Anh văn 3', 3, 45, 45, NULL, NULL, 5, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(13, NULL, 'Toán rời rạc', 3, 45, 45, NULL, NULL, 6, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(14, NULL, 'Object Oriented Programming C#', 4, 90, 30, NULL, 60, 7, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(15, NULL, 'Đại số', 3, 45, 45, NULL, NULL, 1, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(16, NULL, 'Vật lý 1', 2, 30, 30, NULL, NULL, 2, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(17, NULL, 'Introduction to Software Engineering', 3, 60, 30, NULL, 30, 3, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(18, NULL, 'Fundamentals of Computing 1', 4, 75, 45, NULL, 30, 4, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(19, NULL, 'Những NLCB của CN ML 1', 3, 45, 45, NULL, NULL, 5, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50'),
-(20, NULL, 'Anh văn 1', 4, 60, 60, NULL, NULL, 6, 1, '2018-07-14 00:18:50', '2018-07-14 00:18:50');
+(1, NULL, 'Software Process & Quality Management', 6, 90, 60, NULL, 30, 2, 1, '2018-07-14 04:38:31', '2018-07-14 04:38:31');
 
 -- --------------------------------------------------------
 
@@ -97,6 +85,14 @@ CREATE TABLE `courses_plan` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `courses_plan`
+--
+
+INSERT INTO `courses_plan` (`id`, `course_id`, `plan_id`, `hk`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 1, NULL, NULL),
+(2, 1, 1, 2, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -127,6 +123,28 @@ INSERT INTO `grades` (`id`, `name`, `created_at`, `updated_at`) VALUES
 CREATE TABLE `grades_plans` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `grades_plans`
+--
+
+INSERT INTO `grades_plans` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'KẾ hoạch đào tạo 2018 - 2019', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logs`
+--
+
+CREATE TABLE `logs` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `option` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -174,13 +192,13 @@ CREATE TABLE `password_resets` (
 
 CREATE TABLE `students` (
   `id` int(10) UNSIGNED NOT NULL,
-  `studen_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `student_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dob` date NOT NULL,
   `status` tinyint(1) NOT NULL,
   `gender` int(11) NOT NULL,
   `class_id` int(10) UNSIGNED NOT NULL,
-  `grade_id` int(10) UNSIGNED NOT NULL,
+  `log_id` int(10) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -259,6 +277,14 @@ ALTER TABLE `grades_plans`
   ADD UNIQUE KEY `grades_plans_name_unique` (`name`);
 
 --
+-- Indexes for table `logs`
+--
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `logs_name_unique` (`name`),
+  ADD KEY `logs_user_id_foreign` (`user_id`);
+
+--
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -275,9 +301,9 @@ ALTER TABLE `password_resets`
 --
 ALTER TABLE `students`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `students_studen_id_unique` (`studen_id`),
+  ADD UNIQUE KEY `students_studen_id_unique` (`student_id`),
   ADD KEY `students_class_id_foreign` (`class_id`),
-  ADD KEY `students_grade_id_foreign` (`grade_id`);
+  ADD KEY `students_log_id_foreign` (`log_id`);
 
 --
 -- Indexes for table `users`
@@ -295,19 +321,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `courses_plan`
 --
 ALTER TABLE `courses_plan`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `grades`
@@ -319,7 +345,13 @@ ALTER TABLE `grades`
 -- AUTO_INCREMENT for table `grades_plans`
 --
 ALTER TABLE `grades_plans`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -331,7 +363,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -363,11 +395,17 @@ ALTER TABLE `courses_plan`
   ADD CONSTRAINT `courses_plan_plan_id_foreign` FOREIGN KEY (`plan_id`) REFERENCES `grades_plans` (`id`);
 
 --
+-- Constraints for table `logs`
+--
+ALTER TABLE `logs`
+  ADD CONSTRAINT `logs_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
 -- Constraints for table `students`
 --
 ALTER TABLE `students`
   ADD CONSTRAINT `students_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`),
-  ADD CONSTRAINT `students_grade_id_foreign` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`);
+  ADD CONSTRAINT `students_log_id_foreign` FOREIGN KEY (`log_id`) REFERENCES `logs` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

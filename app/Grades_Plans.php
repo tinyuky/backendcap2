@@ -8,7 +8,7 @@ class Grades_Plans extends Model
 {
     protected $table = 'grades_plans';
     protected $fillable = [
-        'id','name','grade_id'
+        'id','name','hk'
     ];
 
     /**

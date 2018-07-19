@@ -251,7 +251,6 @@ class StudentsController extends Controller
             'Dob' =>$student->dob,
             'Gender' => $student->gender,
             'Class'=> $student->class->name,
-            'Grade'=> $student->grade->name,
             'Status'=> $student->status,
             'ClassId'=> $student->class_id,
         ];
@@ -268,7 +267,6 @@ class StudentsController extends Controller
                 'Dob' =>$student->dob,
                 'Gender' => $student->gender,
                 'Class'=> $student->class->name,
-                'Grade'=> $student->grade->name,
                 'Status'=> $student->status,
                 'ClassId'=> $student->class_id,
             ];

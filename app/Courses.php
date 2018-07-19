@@ -8,7 +8,7 @@ class Courses extends Model
 {
     protected $table = 'courses';
     protected $fillable = [
-        'id','name','code','dvht','tong_tiet','lt','th','bt','hk'
+        'id','name','code','dvht','tong_tiet','lt','th','bt','hk','da'
     ];
 
     /**

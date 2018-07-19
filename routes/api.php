@@ -27,6 +27,7 @@ Route::group([
     Route::post('updateGrade','GradesController@update');
     Route::get('getGrade/{id}','GradesController@get');
     Route::get('getAllGrades','GradesController@getall');
+    Route::get('getHKFromGradeId/{id}','GradesController@getHKFromGradeId');
 
     Route::post('addClass','ClassesController@add');
     Route::post('updateClass','ClassesController@update');
@@ -45,6 +46,7 @@ Route::group([
     Route::get('getCourse/{id}','CoursesController@get');
     Route::get('getAllCourses','CoursesController@getall');
     Route::get('deleteCourse/{id}','CoursesController@delete');
+    Route::get('getCourseList/{grade_id}/{hk}','CoursesController@getCourseList');
     
     Route::get('getCourseInPlan/{grade_id}/{hk}','GradesPlansController@getCourses');
     Route::get('getEducationPlan/{id}','GradesPlansController@get');

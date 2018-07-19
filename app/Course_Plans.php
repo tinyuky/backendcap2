@@ -8,7 +8,7 @@ class Course_Plans extends Model
 {
     protected $table = 'courses_plan';
     protected $fillable = [
-        'id','course_id','plan_id','hk'
+        'id','course_id','plan_id','hk','dvht','tong_tiet','lt','th','bt','da'
     ];
 
     /**

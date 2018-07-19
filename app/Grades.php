@@ -26,15 +26,15 @@ class Grades extends Model
     }
     
     public function students(){
-        return hasMany('App\Students','grade_id','id');
+        return $this->hasMany('App\Students','grade_id','id');
     }
 
     public function plans(){
-        return hasMany('App\Grades_Plans','grade_id','id');
+        return $this->hasMany('App\Grades_Plans','grade_id','id');
     }
 
     public function courses(){
-        return hasMany('App\Courses','grade_id','id');
+        return $this->hasMany('App\Courses','grade_id','id');
     }
 
 }

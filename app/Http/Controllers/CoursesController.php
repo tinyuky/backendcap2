@@ -185,7 +185,7 @@ class CoursesController extends Controller
             }
             
         }
-        Storage::disk('public_uploads')->delete($filename);
+        Storage::disk('public_uploads')->move($filename,'Courses_'.$grade_id.'_Excel');
         return response()->json('Add success');
     }
 
@@ -304,5 +304,9 @@ class CoursesController extends Controller
     //check unique
     private function validateUniques($value,$list){
         return in_array($value,$list);
+    }
+
+    public function getCourseList($grade_id,$hk){
+        return CourseResource::collection(Courses::where('grade_id',$grade_id)->where('hk',$hk)->get());
     }
 }

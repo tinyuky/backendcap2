@@ -23,6 +23,7 @@ class CreateCourseManagemmentTable extends Migration
             $table->integer('bt')->nullable();
             $table->integer('th')->nullable();
             $table->integer('hk');
+            $table->integer('da')->nullable();
             $table->integer('grade_id')->unsigned();
             $table->foreign('grade_id')->references('id')->on('grades');
             $table->timestamps();

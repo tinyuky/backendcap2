@@ -80,5 +80,19 @@ class GradesController extends Controller
     public function getall(){
         return GradesResource::collection(Grades::orderBy('name','desc')->get());
     }
-   
+    public function getHKFromGradeId($id){
+        $list = Grades::find($id)->courses;
+        $rsr = [];
+        if(count($list)){
+            foreach ($list as $key) {
+            $rs[] = $key->hk;
+            }
+            $rs= array_unique($rs);
+            sort($rs, SORT_NUMERIC); 
+            foreach ($rs as $key) {
+                $rsr[] = ['Name'=>$key];
+            }
+        }
+        return response()->json($rsr);    
+    }
 }

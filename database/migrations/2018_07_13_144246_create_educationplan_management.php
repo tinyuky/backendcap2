@@ -15,8 +15,10 @@ class CreateEducationplanManagement extends Migration
     {
         Schema::create('grades_plans', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
+            $table->string('name');
+            $table->integer('hk');
             $table->timestamps();
+            $table->unique(['name','hk']);
         });
         
         Schema::create('courses_plan', function (Blueprint $table) {
@@ -25,7 +27,12 @@ class CreateEducationplanManagement extends Migration
             $table->integer('plan_id')->unsigned();
             $table->foreign('course_id')->references('id')->on('courses');
             $table->foreign('plan_id')->references('id')->on('grades_plans');
-            $table->integer('hk');
+            $table->integer('dvht')->nullable();
+            $table->integer('tong_tiet')->nullable();
+            $table->integer('lt')->nullable();
+            $table->integer('bt')->nullable();
+            $table->integer('th')->nullable();
+            $table->integer('da')->nullable();
             $table->timestamps();
         });
         

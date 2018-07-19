@@ -24,7 +24,10 @@ class Course extends JsonResource
             'BT' => $this->bt,
             'TH' => $this->th,
             'HK' => $this->hk,
+            'ĐA' => $this->da,
             'GradeId'=>$this->grade_id,
         ];
+        
     }
+    
 }
