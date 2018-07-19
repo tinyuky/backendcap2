@@ -40,7 +40,7 @@ Route::group([
     Route::get('getStudent/{id}','StudentsController@get');
     Route::get('getAllStudents','StudentsController@getall');
 
-    Route::post('handleCourse','CoursesController@handle');
+    Route::post('handleCourse/{id}','CoursesController@handle');
     Route::get('importCourse/{name}/{grade_id}','CoursesController@import');  
     Route::post('updateCourse','CoursesController@update');
     Route::get('getCourse/{id}','CoursesController@get');

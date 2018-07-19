@@ -9,6 +9,7 @@ use App\Courses;
 use App\Grades;
 use App\Http\Resources\Course as CourseResource;
 use App\Http\Resources\GradePlan as GradePlanResource;
+use App\Rules\GradePlanUnique;
 
 class GradesPlansController extends Controller
 {
@@ -16,6 +17,11 @@ class GradesPlansController extends Controller
         $name = $request['Year'];
         $hk = $request['HK'];
         $list = $request['List'];
+        $rsunique = $request['Year'].$request['HK'];
+        $request->request->add(['unique'=> $rsunique]);
+        $request->validate([
+            'unique'=> new GradePlanUnique(),
+        ]);
 
         $plan = new Grades_Plans();
         $plan->name = $name;
@@ -27,7 +33,7 @@ class GradesPlansController extends Controller
             $add = new Course_Plans();
             $add->course_id = $key['CourseId'];
             $add->plan_id = $plan->id;
-            $add->dvht = $find->dhvt;
+            $add->dvht = $find->dvht;
             $add->tong_tiet = $find->tong_tiet;
             $add->lt = $find->lt;
             $add->bt = $find->bt;

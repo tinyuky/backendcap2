@@ -16,15 +16,14 @@ class CoursesPlans extends JsonResource
     {
         $this->resource->load('course');
         return [
-            'Id' => $this->whenLoaded('course')->id,
+            'Id' => $this->id,
             'MaMH'=>$this->whenLoaded('course')->code,
             'Name' => $this->whenLoaded('course')->name,
-            'DVHT' => $this->whenLoaded('course')->dvht,
-            'TongTiet' => $this->whenLoaded('course')->tong_tiet,
-            'LT' => $this->whenLoaded('course')->lt,
-            'BT' => $this->whenLoaded('course')->bt,
-            'TH' => $this->whenLoaded('course')->th,
-            'HK' => $this->whenLoaded('course')->hk,
+            'DVHT' => $this->dvht,
+            'TongTiet' => $this->tong_tiet,
+            'LT' => $this->lt,
+            'BT' => $this->bt,
+            'TH' => $this->th,
             'GradeId'=>$this->whenLoaded('course')->grade_id,
         ];
     }
