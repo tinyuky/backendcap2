@@ -69,6 +69,11 @@ return [
             'root'   => public_path() . '/uploads/excel',
         ],
 
+        'public_uploads_template' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/uploads/template',
+        ],
+
         'public_template' => [
             'driver' => 'local',
             'root'   => public_path() . '/templates',

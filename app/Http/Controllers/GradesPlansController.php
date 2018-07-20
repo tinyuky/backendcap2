@@ -10,6 +10,8 @@ use App\Grades;
 use App\Http\Resources\Course as CourseResource;
 use App\Http\Resources\GradePlan as GradePlanResource;
 use App\Rules\GradePlanUnique;
+use Excel;
+use Illuminate\Support\Facades\Storage;
 
 class GradesPlansController extends Controller
 {
@@ -17,6 +19,7 @@ class GradesPlansController extends Controller
         $name = $request['Year'];
         $hk = $request['HK'];
         $list = $request['List'];
+
         $rsunique = $request['Year'].$request['HK'];
         $request->request->add(['unique'=> $rsunique]);
         $request->validate([
@@ -29,7 +32,7 @@ class GradesPlansController extends Controller
         $plan->save();
         
         foreach ($list as $key) {
-            $find = Courses::find($key['CourseId'])->get();
+            $find = Courses::find($key['CourseId']);
             $add = new Course_Plans();
             $add->course_id = $key['CourseId'];
             $add->plan_id = $plan->id;
@@ -75,7 +78,91 @@ class GradesPlansController extends Controller
     }
 
     public function getAll(){
-         return GradePlanResource::collection(Grades_Plans::all());
+        return GradePlanResource::collection(Grades_Plans::all());
+    }
+
+    public function export($id){
+        $list = Grades_Plans::find($id)->courses;
+        $add = [];
+        $stt = 1;
+        foreach ($list as $key) {
+            $row = [];
+            $row[] = $stt;
+            $find = Courses::find($key->course_id)->code;
+            if($find != null){
+                $row[] = $find;
+            }
+            else{
+                $row[] = '';
+            }
+            $find = Courses::find($key->course_id)->name;
+            if($find != null){
+                $row[] = $find;
+            }
+            else{
+                $row[] = '';
+            }
+            if($key->dvht){
+                $row[] = $key->dvht;
+            }
+            else{
+                $row[] = '';
+            }
+            if($key->tong_tiet){
+                $row[] = $key->tong_tiet;
+            }
+            else{
+                $row[] = '';
+            }
+            if($key->lt){
+                $row[] = $key->lt;
+            }
+            else{
+                $row[] = '0';
+            }
+            if($key->bt){
+                $row[] = $key->bt;
+            }
+            else{
+                $row[] = '0';
+            }
+            if($key->th){
+                $row[] = $key->th;
+            }
+            else{
+                $row[] = '0';
+            }
+            $row[]='';
+            if($key->da){
+                $row[] = $key->da;
+            }
+            else{
+                $row[] = '0';
+            }
+            $row[] = '';
+            $row[] = Courses::find($key->id)->grade->name;
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $add[] = $row;
+            $stt += 1;
+        }
+        foreach ($add as $key ) {
+            echo "---------------";
+            foreach ($key as $r ) {
+                echo $r."</br>";
+            }
+        }
+        Excel::load(Storage::disk('public_uploads_template')->getDriver()->getAdapter()->getPathPrefix().'TrainingPlan.xlsx', function($file) use($add) {
+            $file->sheet('Sheet1',function($sheet) use($add){
+                $start = 6;
+                foreach ($add as $row) {
+                    $sheet->row($start,$row);
+                    $start++;
+                }
+            });
+        })->download('xlsx');
+        return response()->json('Export success');  
     }
 
 }

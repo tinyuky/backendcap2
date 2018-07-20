@@ -14,14 +14,7 @@ class GradePlanUnique implements Rule
      */
     public function __construct()
     {
-        $list = Grades_Plans::all();
-        $check = [];
-        foreach ($list as $row) {
-            $check[] = $row->name.$row->hk;
-        }
-        if(in_array($value,$check)){
-            return false;
-        }
+        //
     }
 
     /**
@@ -33,7 +26,14 @@ class GradePlanUnique implements Rule
      */
     public function passes($attribute, $value)
     {
-        //
+        $list = Grades_Plans::all();
+        $check = [];
+        foreach ($list as $row) {
+            $check[] = $row->name.$row->hk;
+        }
+        if(in_array($value,$check)){
+            return false;
+        }
     }
 
     /**

@@ -21,7 +21,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'assistant',
-    'middleware'=>'auth.jwtass'
+    // 'middleware'=>'auth.jwtass'
 ],function($router){
     Route::post('addGrade','GradesController@add');
     Route::post('updateGrade','GradesController@update');
@@ -53,6 +53,7 @@ Route::group([
     Route::get('getAllEducationPlans','GradesPlansController@getall');
     Route::post('createEducationPlan','GradesPlansController@create');
     Route::post('updateEducationPlan','GradesPlansController@update');
+    Route::get('exportEducationPlan/{id}','GradesPlansController@export');
 
     Route::get('getAllLogs','LogController@getall');
     Route::get('undoLogs/{id}','LogController@undo');

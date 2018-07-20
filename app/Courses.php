@@ -21,10 +21,10 @@ class Courses extends Model
     ];
 
     public function grade(){
-        return belongsTo('App\Grades');
+        return $this->belongsTo('App\Grades');
     }
 
     public function grades_plans(){
-        return belongsToMany('App\Grades_Plans');
+        return $this->belongsToMany('App\Grades_Plans');
     }
 }
