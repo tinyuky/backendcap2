@@ -83,7 +83,11 @@ class GradesPlansController extends Controller
 
     public function export($id){
         $list = Grades_Plans::find($id)->courses;
+        $list1 = Grades_Plans::find($id);
         $add = [];
+        $add['year'] = $list1->name; 
+        $add['hk'] = $list1->hk;
+        $add['list'] = [];
         $stt = 1;
         foreach ($list as $key) {
             $row = [];
@@ -144,24 +148,59 @@ class GradesPlansController extends Controller
             $row[] = '';
             $row[] = '';
             $row[] = '';
-            $add[] = $row;
+            $add['list'][] = $row;
             $stt += 1;
-        }
-        foreach ($add as $key ) {
-            echo "---------------";
-            foreach ($key as $r ) {
-                echo $r."</br>";
-            }
         }
         Excel::load(Storage::disk('public_uploads_template')->getDriver()->getAdapter()->getPathPrefix().'TrainingPlan.xlsx', function($file) use($add) {
             $file->sheet('Sheet1',function($sheet) use($add){
-                $start = 6;
-                foreach ($add as $row) {
+                // draw data
+                $start = 7;
+                foreach ($add['list'] as $row) {
                     $sheet->row($start,$row);
+                    $sheet->row($start, function($row){
+                        $row->setFontFamily('Times New Roman');
+                    });
                     $start++;
                 }
+                $start--;
+                $sheet->setBorder('A7:O'.$start, 'thin');
+                $start++;
+
+                // draw header
+                $nextyear = $add['year'] + 1;
+                $sheet->setCellValue('A4','CHƯƠNG TRÌNH ĐÀO TẠO NGÀNH KỸ THUẬT PHẦN MỀM HỌC KỲ '.$add['hk'].' - NĂM HỌC '.$add['year'].' - '.$nextyear);
+                $sheet->cell('A4', function($cell){
+                    $cell->setFontWeight('bold');
+                    $cell->setFontSize('15');
+                    $cell->setFontFamily('Times New Roman');
+                });
+
+                // draw footer
+                $sheet->mergeCells('K'.$start.':'.'O'.$start);
+                $sheet->setCellValue('K'.$start,'TP.HCM, ngày ... tháng ... năm 2018');
+                $sheet->cell('K'.$start, function($cell){
+                    //  $cell->setFontStyle('italic');
+                    $cell->setFontSize('13');
+                    $cell->setFontFamily('Times New Roman');
+                });
+                $start++;
+
+                $sheet->setCellValue('C'.$start,'TRƯỞNG KHOA');
+                $sheet->mergeCells('K'.$start.':'.'O'.$start);
+                $sheet->setCellValue('K'.$start,'NGƯỜI LẬP BẢNG');
+                $sheet->cell('C'.$start, function($cell){
+                    $cell->setFontWeight('bold');
+                    $cell->setFontSize('13');
+                    $cell->setFontFamily('Times New Roman');
+                });
+                $sheet->cell('K'.$start, function($cell){
+                    $cell->setFontWeight('bold');
+                    $cell->setFontSize('13');
+                    $cell->setFontFamily('Times New Roman');
+                });
+                          
             });
-        })->download('xlsx');
+        })->download();
         return response()->json('Export success');  
     }
 
