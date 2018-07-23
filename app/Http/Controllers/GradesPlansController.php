@@ -20,7 +20,7 @@ class GradesPlansController extends Controller
         $hk = $request['HK'];
         $list = $request['List'];
 
-        $rsunique = $request['Year'].$request['HK'];
+        $rsunique = "YEAR:".$request['Year'].",HK:".$request['HK'];
         $request->request->add(['unique'=> $rsunique]);
         $request->validate([
             'unique'=> new GradePlanUnique(),
@@ -146,12 +146,6 @@ class GradesPlansController extends Controller
             $row[] = '';
             $add[] = $row;
             $stt += 1;
-        }
-        foreach ($add as $key ) {
-            echo "---------------";
-            foreach ($key as $r ) {
-                echo $r."</br>";
-            }
         }
         Excel::load(Storage::disk('public_uploads_template')->getDriver()->getAdapter()->getPathPrefix().'TrainingPlan.xlsx', function($file) use($add) {
             $file->sheet('Sheet1',function($sheet) use($add){

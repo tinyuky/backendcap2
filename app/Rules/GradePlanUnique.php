@@ -29,10 +29,13 @@ class GradePlanUnique implements Rule
         $list = Grades_Plans::all();
         $check = [];
         foreach ($list as $row) {
-            $check[] = $row->name.$row->hk;
+            $check[] = "YEAR:".$row->name.",HK:".$row->hk;
         }
-        if(in_array($value,$check)){
+        if(in_array($value,$check,TRUE)){
             return false;
+        }
+        else{
+            return true;
         }
     }
 

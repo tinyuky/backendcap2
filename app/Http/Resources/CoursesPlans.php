@@ -24,7 +24,7 @@ class CoursesPlans extends JsonResource
             'LT' => $this->lt,
             'BT' => $this->bt,
             'TH' => $this->th,
-            'GradeId'=>$this->whenLoaded('course')->grade_id,
+            'Grade'=> $this->whenLoaded('course')->grade->name,
         ];
     }
 }
