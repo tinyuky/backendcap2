@@ -21,7 +21,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'assistant',
-    // 'middleware'=>'auth.jwtass'
+    'middleware'=>'auth.jwtass'
 ],function($router){
     Route::post('addGrade','GradesController@add');
     Route::post('updateGrade','GradesController@update');
