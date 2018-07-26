@@ -346,4 +346,9 @@ class CoursesController extends Controller
         $add->save();
         return response()->json(['message'=>'Upload Success'], 200);
     }
+
+    public function downWord($id){
+        $filename = "word_".$id;
+        return response()->file(Storage::disk('public_uploads')->getDriver()->getAdapter()->getPathPrefix().$filename);
+    }
 }
