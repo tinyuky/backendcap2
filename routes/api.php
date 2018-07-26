@@ -48,7 +48,7 @@ Route::group([
     Route::get('deleteCourse/{id}','CoursesController@delete');
     Route::get('getCourseList/{grade_id}/{hk}','CoursesController@getCourseList');
     Route::post('importCourseWord/{grade_id}','CoursesController@importWord');
-    Route::post('downCourseWord/{grade_id}','CoursesController@downWord');
+    Route::get('downCourseWord/{grade_id}','CoursesController@downWord');
     
     Route::get('getCourseInPlan/{grade_id}/{hk}','GradesPlansController@getCourses');
     Route::get('getEducationPlan/{id}','GradesPlansController@get');

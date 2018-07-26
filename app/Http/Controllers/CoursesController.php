@@ -348,7 +348,7 @@ class CoursesController extends Controller
     }
 
     public function downWord($id){
-        $filename = "word_".$id;
+        $filename = "word_".$id.".doc";
         return response()->file(Storage::disk('public_uploads')->getDriver()->getAdapter()->getPathPrefix().$filename);
     }
 }
