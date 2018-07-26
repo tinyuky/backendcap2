@@ -225,7 +225,7 @@ class GradesPlansController extends Controller
         $add = [];
         $add['hk'] = $plan->hk;
         $add['year'] = $plan->name;
-        $add['grade'] = $id;
+        $add['grade'] = Grades::find($id)->name;
         $stt = 1;
         foreach ($list as $key) {
             $row = [];
@@ -351,6 +351,10 @@ class GradesPlansController extends Controller
             });
         })->download();
         return response()->json('Export success');  
+    }
+
+    public function getGradeByPlan($id){
+        return Course_Plans::where('plan_id',$id)->course->grade;
     }
 
     
