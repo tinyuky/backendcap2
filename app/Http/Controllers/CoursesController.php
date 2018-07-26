@@ -35,6 +35,7 @@ class CoursesController extends Controller
         Config::set('excel.import.startRow',6);
         $data = Excel::selectSheets('CTDT_HK1')->load(Storage::disk('public_uploads')->getDriver()->getAdapter()->getPathPrefix().$filename, function($reader) {
         })->get();
+
         // create array to store data
         $students = [];
         $count = 0;
@@ -75,6 +76,9 @@ class CoursesController extends Controller
                     $new['LT'] = trim($row['lt']);
                     $new['BT'] = trim($row['bt']);
                     $new['TH'] = trim($row['th']);
+                    $new['ĐA'] = trim($row['d.amh']);
+                    $new['TC'] = trim($row['tc']);
+                    $new['SG'] = trim($row['so_gio']);
                     $new['HK'] = trim($row['hk']);
                     
                     //validate data
@@ -109,6 +113,18 @@ class CoursesController extends Controller
                             'numeric',
                         ],
                         'TH' => [
+                            'nullable',
+                            'numeric',
+                        ],
+                        'ĐA' => [
+                            'nullable',
+                            'numeric',
+                        ],
+                        'TC' => [
+                            'nullable',
+                            'numeric',
+                        ],
+                        'SG' => [
                             'nullable',
                             'numeric',
                         ],
@@ -178,6 +194,15 @@ class CoursesController extends Controller
                 }
                 if($row['bt']!=""){
                     $new->bt = trim($row['bt']);
+                }
+                if($row['d.amh']!=""){
+                    $new->da = trim($row['d.amh']);
+                }
+                if($row['tc']!=""){
+                    $new->tc = trim($row['tc']);
+                }
+                if($row['so_gio']!=""){
+                    $new->sg = trim($row['so_gio']);
                 }
                 $new->hk = trim($row['hk']);
                 $new->grade_id = $grade_id;
@@ -308,5 +333,17 @@ class CoursesController extends Controller
 
     public function getCourseList($grade_id,$hk){
         return CourseResource::collection(Courses::where('grade_id',$grade_id)->where('hk',$hk)->get());
+    }
+
+    public function importWord(Request $request,$gradeid){
+        $file = $request->file('File');
+        $filename = 'word_'.$gradeid.'.doc';
+        // save file
+        Storage::disk('public_uploads')->put($filename, File::get($file));
+        // update grade
+        $add = Grades::find($gradeid);
+        $add->file_word = $filename;
+        $add->save();
+        return response()->json(['message'=>'Upload Success'], 200);
     }
 }

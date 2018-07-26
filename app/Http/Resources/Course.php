@@ -25,6 +25,8 @@ class Course extends JsonResource
             'TH' => $this->th,
             'HK' => $this->hk,
             'ĐA' => $this->da,
+            'TC' => $this->tc,
+            'SG' => $this->sg,
             'GradeId'=> $this->grade_id,
             'Grade'=> $this->grade->name,
         ];

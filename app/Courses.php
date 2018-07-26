@@ -27,4 +27,8 @@ class Courses extends Model
     public function grades_plans(){
         return $this->belongsToMany('App\Grades_Plans');
     }
+
+    public function coursesplan(){
+        return $this->hasMany('App\Course_Plans');
+    }
 }

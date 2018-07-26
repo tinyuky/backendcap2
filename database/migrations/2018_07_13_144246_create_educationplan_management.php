@@ -27,12 +27,15 @@ class CreateEducationplanManagement extends Migration
             $table->integer('plan_id')->unsigned();
             $table->foreign('course_id')->references('id')->on('courses');
             $table->foreign('plan_id')->references('id')->on('grades_plans');
-            $table->integer('dvht')->nullable();
-            $table->integer('tong_tiet')->nullable();
-            $table->integer('lt')->nullable();
-            $table->integer('bt')->nullable();
-            $table->integer('th')->nullable();
-            $table->integer('da')->nullable();
+            $table->integer('dvht')->nullable()->default('0');
+            $table->integer('tong_tiet')->nullable()->default('0');
+            $table->integer('lt')->nullable()->default('0');
+            $table->integer('bt')->nullable()->default('0');
+            $table->integer('th')->nullable()->default('0');
+            $table->integer('da')->nullable()->default('0');
+            $table->integer('tc')->nullable()->default('0');
+            $table->integer('sg')->nullable()->default('0');
+            $table->string('ghi_chu')->nullable();
             $table->timestamps();
         });
         

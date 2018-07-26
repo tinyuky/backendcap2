@@ -15,7 +15,8 @@ class CreateR2 extends Migration
     {
         Schema::create('grades', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();           
+            $table->string('name')->unique();
+            $table->string('file_word')->nullable();           
             $table->timestamps();
         });
 
