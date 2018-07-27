@@ -354,7 +354,12 @@ class GradesPlansController extends Controller
     }
 
     public function getGradeByPlan($id){
-        return Course_Plans::where('plan_id',$id)->course->grade;
+        $list = Course_Plans::where('plan_id',$id)->get();
+        $rs = [];
+        foreach ($list as $row) {
+            $rs[] = $row->course->grade;
+        }
+        return array_unique($rs);
     }
 
     

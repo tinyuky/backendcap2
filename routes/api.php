@@ -55,7 +55,7 @@ Route::group([
     Route::post('createEducationPlan','GradesPlansController@create');
     Route::post('updateEducationPlan','GradesPlansController@update');
     
-    Route::get('exportEducationPlanByGrade/{planid}/{gradeid}','GradesPlansController@exportByGrade');
+    
     Route::get('getGradeByPlan/{planid}','GradesPlansController@getGradeByPlan');
 
 
@@ -63,5 +63,6 @@ Route::group([
     Route::get('undoLogs/{id}','LogController@undo');
 });
 
+Route::get('exportEducationPlanByGrade/{planid}/{gradeid}','GradesPlansController@exportByGrade');
 Route::get('exportEducationPlan/{id}','GradesPlansController@export');
 Route::get('downCourseWord/{grade_id}','CoursesController@downWord');
