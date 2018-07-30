@@ -8,7 +8,7 @@ class Courses extends Model
 {
     protected $table = 'courses';
     protected $fillable = [
-        'id','name','code','dvht','tong_tiet','lt','th','bt','hk','da'
+        'id','name','code','dvht','tong_tiet','lt','th','bt','hk','da','grade_id'
     ];
 
     /**
@@ -29,6 +29,6 @@ class Courses extends Model
     }
 
     public function coursesplan(){
-        return $this->hasMany('App\Course_Plans');
+        return $this->hasMany('App\Course_Plans','id','course_id');
     }
 }

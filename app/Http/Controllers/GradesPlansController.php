@@ -12,6 +12,7 @@ use App\Http\Resources\GradePlan as GradePlanResource;
 use App\Rules\GradePlanUnique;
 use Excel;
 use Illuminate\Support\Facades\Storage;
+use File;
 
 class GradesPlansController extends Controller
 {
@@ -177,7 +178,7 @@ class GradesPlansController extends Controller
                     $start++;
                 }
                 $start--;
-                $sheet->setBorder('A7:O'.$start, 'thin');
+                $sheet->setBorder('A7:Q'.$start, 'thin');
                 $start++;
 
                 // draw header
@@ -219,88 +220,92 @@ class GradesPlansController extends Controller
     }
 
 
-    public function exportByGrade($planid, $id){
-        $list = Grades::find($id)->courses->courseplans;
-        $plan = Grades_Plans::find($planid);
+    public function exportByGrade($id, $grid){
+        $list = Grades_Plans::find($id)->courses;
+        $list1 = Grades_Plans::find($id);
+        $gradeplan = Grades::find($grid);
         $add = [];
-        $add['hk'] = $plan->hk;
-        $add['year'] = $plan->name;
-        $add['grade'] = Grades::find($id)->name;
+        $add['year'] = $list1->name; 
+        $add['hk'] = $list1->hk;
+        $add['grade'] = $gradeplan->name;
+        $add['list'] = [];
         $stt = 1;
         foreach ($list as $key) {
-            $row = [];
-            $row[] = $stt;
-            $find = Courses::find($key->course_id)->code;
-            if($find != null){
-                $row[] = $find;
-            }
-            else{
+            if($key->course->grade_id == $grid){
+                $row = [];
+                $row[] = $stt;
+                $find = Courses::find($key->course_id)->code;
+                if($find != null){
+                    $row[] = $find;
+                }
+                else{
+                    $row[] = '';
+                }
+                $find = Courses::find($key->course_id)->name;
+                if($find != null){
+                    $row[] = $find;
+                }
+                else{
+                    $row[] = '';
+                }
+                if($key->dvht){
+                    $row[] = $key->dvht;
+                }
+                else{
+                    $row[] = '';
+                }
+                if($key->tong_tiet){
+                    $row[] = $key->tong_tiet;
+                }
+                else{
+                    $row[] = '';
+                }
+                if($key->lt){
+                    $row[] = $key->lt;
+                }
+                else{
+                    $row[] = '0';
+                }
+                if($key->bt){
+                    $row[] = $key->bt;
+                }
+                else{
+                    $row[] = '0';
+                }
+                if($key->th){
+                    $row[] = $key->th;
+                }
+                else{
+                    $row[] = '0';
+                }
+                $row[]='';
+                if($key->da){
+                    $row[] = $key->da;
+                }
+                else{
+                    $row[] = '0';
+                }
                 $row[] = '';
-            }
-            $find = Courses::find($key->course_id)->name;
-            if($find != null){
-                $row[] = $find;
-            }
-            else{
+                if($key->tc){
+                    $row[] = $key->tc;
+                }
+                else{
+                    $row[] = '0';
+                }
+                if($key->sg){
+                    $row[] = $key->sg;
+                }
+                else{
+                    $row[] = '0';
+                }
                 $row[] = '';
-            }
-            if($key->dvht){
-                $row[] = $key->dvht;
-            }
-            else{
                 $row[] = '';
-            }
-            if($key->tong_tiet){
-                $row[] = $key->tong_tiet;
-            }
-            else{
                 $row[] = '';
+                $add['list'][] = $row;
+                $stt += 1;
             }
-            if($key->lt){
-                $row[] = $key->lt;
-            }
-            else{
-                $row[] = '0';
-            }
-            if($key->bt){
-                $row[] = $key->bt;
-            }
-            else{
-                $row[] = '0';
-            }
-            if($key->th){
-                $row[] = $key->th;
-            }
-            else{
-                $row[] = '0';
-            }
-            $row[]='';
-            if($key->da){
-                $row[] = $key->da;
-            }
-            else{
-                $row[] = '0';
-            }
-            $row[] = '';
-            if($key->tc){
-                $row[] = $key->tc;
-            }
-            else{
-                $row[] = '0';
-            }
-            if($key->sg){
-                $row[] = $key->sg;
-            }
-            else{
-                $row[] = '0';
-            }
-            $row[] = '';
-            $row[] = '';
-            $row[] = '';
-            $add['list'][] = $row;
-            $stt += 1;
         }
-        Excel::load(Storage::disk('public_uploads_template')->getDriver()->getAdapter()->getPathPrefix().'TrainingPlanByGrade.xlsx', function($file) use($add) {
+        $a = Excel::load(Storage::disk('public_uploads_template')->getDriver()->getAdapter()->getPathPrefix().'TrainingPlanByGrade.xlsx', function($file) use($add) {
             $file->sheet('Sheet1',function($sheet) use($add){
                 // draw data
                 $start = 7;
@@ -312,7 +317,7 @@ class GradesPlansController extends Controller
                     $start++;
                 }
                 $start--;
-                $sheet->setBorder('A7:O'.$start, 'thin');
+                $sheet->setBorder('A7:P'.$start, 'thin');
                 $start++;
 
                 // draw header
@@ -349,17 +354,17 @@ class GradesPlansController extends Controller
                 });
                           
             });
-        })->download();
-        return response()->json('Export success');  
+        })->export('xls');
     }
 
     public function getGradeByPlan($id){
         $list = Course_Plans::where('plan_id',$id)->get();
         $rs = [];
         foreach ($list as $row) {
-            $rs[] = $row->course->grade;
+            $rs[] = $row->course->grade_id;
         }
-        return array_unique($rs);
+        $rs = array_unique($rs);
+        return Grades::whereIn('id',$rs)->get();
     }
 
     
