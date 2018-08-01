@@ -14,11 +14,15 @@ class Classes_CoursesPlanRs extends JsonResource
      */
     public function toArray($request)
     {
+        $this->resource->load('courseinplan');
+        $this->resource->load('lecturer');
         return [
             'Id'=> $this->id,
             'Name' => $this->name,
             'CoursePlanId' => $this->courseplan_id,
-            'LecturerId' => $this->lecturer_id
+            'Course' => $this->whenLoaded('courseinplan')->course->name,
+            'LecturerId' => $this->lecturer_id,
+            'Lecturer' => $this->whenLoaded('lecturer')->name,
         ];
     }
 }

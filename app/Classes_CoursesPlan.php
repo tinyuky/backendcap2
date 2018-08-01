@@ -19,4 +19,12 @@ class Classes_CoursesPlan extends Model
     protected $hidden = [
         'created_at', 'updated_at',
     ];
+
+    public function courseinplan(){
+        return $this->belongsTo('App\Course_Plans','courseplan_id');
+    }
+    
+    public function lecturer(){
+        return $this->belongsTo('App\User','lecturer_id');
+    }
 }
