@@ -298,6 +298,9 @@ class CoursesController extends Controller
         $db->bt = $request->input('BT');
         $db->th = $request->input('TH');
         $db->hk = $request->input('HK');
+        $db->da = $request->input('ĐA');
+        $db->tc = $request->input('TC');
+        $db->sg = $request->input('SG');
         $db->grade_id = $request->input('GradeId');
         $db->save();
         return response()->json(['message'=>'Update Success'], 200);

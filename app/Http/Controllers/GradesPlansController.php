@@ -9,6 +9,7 @@ use App\Courses;
 use App\Grades;
 use App\Http\Resources\Course as CourseResource;
 use App\Http\Resources\GradePlan as GradePlanResource;
+use App\Http\Resources\CoursesPlans as CoursesPlansResource;
 use App\Rules\GradePlanUnique;
 use Excel;
 use Illuminate\Support\Facades\Storage;
@@ -365,6 +366,107 @@ class GradesPlansController extends Controller
         }
         $rs = array_unique($rs);
         return Grades::whereIn('id',$rs)->get();
+    }
+
+    public function getCoursePlan($id){
+        return new CoursesPlansResource(Course_Plans::find($id));
+    }
+
+    public function updateCoursePlan(Request $request){
+        $messages = [
+            'STT.numeric'=> 'Số thứ tự không đúng định dạng',
+            'MaMH.not_regex' => 'Mã môn học sai định dạng',
+            'Name.required' => 'Tên môn học không để trống',
+            'Name.not_regex' => 'Tên môn học sai định dạng',
+            'Name.unique' => 'Tên môn học đã tồn tại',
+            'DVHT.numeric'=> 'DVHTTC không đúng định dạng',
+            'DVHT.required' => 'DVHTTC không để trống',
+            'TongTiet.numeric'=> 'Tổng tiết không đúng định dạng',
+            'TongTiet.required' => 'Tổng tiết không để trống',
+            'LT.numeric'=> 'LT không đúng định dạng',
+            'BT.numeric'=> 'BT không đúng định dạng',
+            'TH.numeric'=> 'TH không đúng định dạng',
+        ];
+        //validate id account
+        $validator2 = Validator::make($request->all(), [
+            'Id' => array(
+                'required',
+                'numeric',
+            ),
+        ], $messages)->validate();
+        
+        
+        $db = Courses::find($request['Id']);
+
+        $validator = Validator::make($request->all(), [
+            'Name' => [
+                'required',
+                'not_regex:/\`|\~|\!|\@|\$|\%|\^|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;/s',
+                'regex:/^\S+(\s\S+)+$/s',
+            ],
+            'MaMH' => array(
+                        'nullable',
+                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
+                    ),
+            'DVHT' => [
+                'required',
+                'numeric',
+            ],
+            'TongTiet' => [
+                'required',
+                'numeric',
+            ],
+            'LT' => [
+                'nullable',
+                'numeric',
+            ],
+            'BT' => [
+                'nullable',
+                'numeric',
+            ],
+            'TH' => [
+                'nullable',
+                'numeric',
+            ],
+            'HK' => [
+                'required',
+                'numeric',
+            ],
+            'GradeId' => [
+                'required',
+                'numeric',
+            ],
+        ],$messages)->validate();
+
+        //Check 4 column unique
+        // $dbunique = $db->code.$db->name.$db->hk.$db->grade_id;
+        // $rsunique = $request['Code'].$request['Name'].$request['HK'].$request['GradeId'];
+        // if( $dbunique != $rsunique ){
+        //     $request->request->add(['unique'=> $rsunique]);
+        //     $request->validate([
+        //         'unique'=> new CourseUnique(),
+        //     ]);
+        // }
+        
+        // $db->code = $request->input('Code');
+        // $db->name = $request->input('Name');
+        $db->dvht = $request->input('DVHT');
+        $db->tong_tiet = $request->input('TongTiet');
+        $db->lt = $request->input('LT');
+        $db->bt = $request->input('BT');
+        $db->th = $request->input('TH');
+        // $db->hk = $request->input('HK');
+        $db->da = $request->input('ĐA');
+        $db->tc = $request->input('TC');
+        $db->sg = $request->input('SG');
+        $db->ghi_chu = $request->input('GhiChu');
+        $db->save();
+        return response()->json(['message'=>'Update Success'], 200);
+    }
+
+    public function deleteCoursePlan($id){
+        Course_Plans::delete($id);
+        return response()->json(['message' => 'Delete success']);
     }
 
     
