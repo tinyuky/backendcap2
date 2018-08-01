@@ -19,6 +19,11 @@ class LectureAccountController extends Controller
     {
         return new UserResource(User::find($id));
     }
+
+    public function getallactive(Request $request)
+    {
+        return UserResource::collection(User::where('role','lecturer')->where('status',1)->get());
+    }
     //Add account function
     public function add(Request $request)
     {

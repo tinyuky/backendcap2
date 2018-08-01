@@ -14,6 +14,8 @@ use App\Rules\GradePlanUnique;
 use Excel;
 use Illuminate\Support\Facades\Storage;
 use File;
+use App\Classes_CoursesPlan;
+use App\Http\Resources\Classes_CoursesPlanRs as Classes_CoursesPlanResource;
 
 class GradesPlansController extends Controller
 {
@@ -466,7 +468,31 @@ class GradesPlansController extends Controller
 
     public function deleteCoursePlan($id){
         Course_Plans::delete($id);
-        return response()->json(['message' => 'Delete success']);
+        return response()->json(['message' => 'Delete success', 200]);
+    }
+
+
+    public function createClassInPlan(Request $request){
+        $classeslst = $request['AssClass'];
+        foreach ($classeslst as $value) {
+            foreach ($value['Classes'] as $row) {
+                $add = new Classes_CoursesPlan();
+                $add->name = $row;
+                $add->courseplan_id = $value['CourseId'];
+                $add->lecturer_id = $value['LecturerId'];
+                $add->save();
+            }
+        }
+        return response()->json(['message' => 'Add success', 200]);
+    }
+
+    public function getAllClassInPlan(){
+        return Classes_CoursesPlanResource::collection(Classes_CoursesPlan::all());
+    }
+
+    public function deleteClassInPlan($id){
+        Classes_CoursesPlan::delete($id);
+        return response()->json(['message' => 'Delete success', 200]);
     }
 
     
