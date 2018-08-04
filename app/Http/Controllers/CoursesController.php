@@ -282,15 +282,18 @@ class CoursesController extends Controller
 
         //Check 4 column unique
         $dbunique = $db->code.$db->name.$db->hk.$db->grade_id;
-        $rsunique = $request['Code'].$request['Name'].$request['HK'].$request['GradeId'];
+        $rsunique = $request['MaMH'].$request['Name'].$request['HK'].$request['GradeId'];
+        // echo $dbunique.'</br>';
+        // echo $rsunique.'</br>';
         if( $dbunique != $rsunique ){
             $request->request->add(['unique'=> $rsunique]);
+            // return $request['unique'];
             $request->validate([
                 'unique'=> new CourseUnique(),
             ]);
         }
         
-        $db->code = $request->input('Code');
+        $db->code = $request->input('MaMH');
         $db->name = $request->input('Name');
         $db->dvht = $request->input('DVHT');
         $db->tong_tiet = $request->input('TongTiet');

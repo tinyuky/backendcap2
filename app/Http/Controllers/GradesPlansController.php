@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use File;
 use App\Classes_CoursesPlan;
 use App\Http\Resources\Classes_CoursesPlanRs as Classes_CoursesPlanResource;
+use Validator;
 
 class GradesPlansController extends Controller
 {
@@ -452,16 +453,16 @@ class GradesPlansController extends Controller
         
         // $db->code = $request->input('Code');
         // $db->name = $request->input('Name');
-        $db->dvht = $request->input('DVHT');
+        // $db->dvht = $request->input('DVHT');
         $db->tong_tiet = $request->input('TongTiet');
-        $db->lt = $request->input('LT');
-        $db->bt = $request->input('BT');
-        $db->th = $request->input('TH');
-        // $db->hk = $request->input('HK');
-        $db->da = $request->input('ĐA');
-        $db->tc = $request->input('TC');
-        $db->sg = $request->input('SG');
-        $db->ghi_chu = $request->input('GhiChu');
+        // $db->lt = $request->input('LT');
+        // $db->bt = $request->input('BT');
+        // $db->th = $request->input('TH');
+        // // $db->hk = $request->input('HK');
+        // $db->da = $request->input('ĐA');
+        // $db->tc = $request->input('TC');
+        // $db->sg = $request->input('SG');
+        // $db->ghi_chu = $request->input('GhiChu');
         $db->save();
         return response()->json(['message'=>'Update Success'], 200);
     }

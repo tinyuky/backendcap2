@@ -26,13 +26,25 @@ class CourseUnique implements Rule
      */
     public function passes($attribute, $value)
     {
+        // $list = Courses::all();
+        // $check = [];
+        // foreach ($list as $row) {
+
+        //     $check.push($row->code.$row->name.$row->hk.$row->grade_id);
+        // }
+        // if(in_array($value,$check)){
+        //     return false;
+        // }
         $list = Courses::all();
         $check = [];
         foreach ($list as $row) {
             $check[] = $row->code.$row->name.$row->hk.$row->grade_id;
         }
-        if(in_array($value,$check)){
+        if(in_array($value,$check,TRUE)){
             return false;
+        }
+        else{
+            return true;
         }
     }
 
