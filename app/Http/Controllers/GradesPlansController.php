@@ -468,7 +468,7 @@ class GradesPlansController extends Controller
     }
 
     public function deleteCoursePlan($id){
-        Course_Plans::delete($id);
+        Course_Plans::find($id)->delete();
         return response()->json(['message' => 'Delete success', 200]);
     }
 
@@ -492,10 +492,38 @@ class GradesPlansController extends Controller
     }
 
     public function deleteClassInPlan($id){
-        Classes_CoursesPlan::delete($id);
+        Classes_CoursesPlan::find($id)->delete();
         return response()->json(['message' => 'Delete success', 200]);
     }
 
-    
+    public function deleteEducationPlan($id){
+        $courselst = [];
+        $courses = Course_Plans::where('plan_id',$id)->get();
+        foreach ($courses as $key => $value) {
+            $courselst[] = $value->id;
+        }
+        Classes_CoursesPlan::whereIn('courseplan_id',$courselst)->delete();
+        Course_Plans::where('plan_id',$id)->delete();
+        Grades_Plans::find($id)->delete();
+        return response()->json(['message' => 'Delete success', 200]);
+    }    
+
+    public function getTrueFalseCourseInPlan($id){
+        $rs = [];
+        $courses = Course_Plans::where('plan_id',$id)->get();
+        foreach ($courses as $key => $value) {
+            $status = true;
+            $class = Classes_CoursesPlan::where('courseplan_id',$value->id)->get();
+            if( count($class) > 0){
+                $status = false;
+            }
+            $rs[] = [
+                'Id'=>$value->id,
+                'Name'=>$value->course->name,
+                'Status'=>$status
+            ];
+        }
+        return json_encode($rs);
+    }
 
 }

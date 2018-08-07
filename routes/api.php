@@ -60,9 +60,13 @@ Route::group([
     Route::post('assignClassInPlan','GradesPlansController@createClassInPlan');
     Route::get('getAllClassInPlan','GradesPlansController@getAllClassInPlan');
     Route::get('deleteClassInPlan/{id}','GradesPlansController@deleteClassInPlan');
+    Route::get('deleteEducationPlan/{id}','GradesPlansController@deleteEducationPlan');
+    Route::get('getTrueFalseCourseInPlan/{id}','GradesPlansController@getTrueFalseCourseInPlan');
+
     
     
     Route::get('getGradeByPlan/{planid}','GradesPlansController@getGradeByPlan');
+    Route::get('getCourseByPlan/{planid}','GradesPlansController@getCourseByPlan');
 
 
     Route::get('getAllLogs','LogController@getall');
