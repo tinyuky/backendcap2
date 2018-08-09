@@ -399,7 +399,7 @@ class GradesPlansController extends Controller
         ], $messages)->validate();
         
         
-        $db = Courses::find($request['Id']);
+        $db = Course_Plans::find($request['Id']);
 
         $validator = Validator::make($request->all(), [
             'LT' => [
