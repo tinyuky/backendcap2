@@ -24,7 +24,7 @@ class CoursesPlans extends JsonResource
             'LT' => $this->lt,
             'BT' => $this->bt,
             'TH' => $this->th,
-            'ĐA' => $this->da,
+            'DA' => $this->da,
             'TC' => $this->tc,
             'SG' => $this->sg,
             'Grade'=> $this->whenLoaded('course')->grade->name,

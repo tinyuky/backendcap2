@@ -402,23 +402,6 @@ class GradesPlansController extends Controller
         $db = Courses::find($request['Id']);
 
         $validator = Validator::make($request->all(), [
-            'Name' => [
-                'required',
-                'not_regex:/\`|\~|\!|\@|\$|\%|\^|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;/s',
-                'regex:/^\S+(\s\S+)+$/s',
-            ],
-            'MaMH' => array(
-                        'nullable',
-                        'not_regex:/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/s',
-                    ),
-            'DVHT' => [
-                'required',
-                'numeric',
-            ],
-            'TongTiet' => [
-                'required',
-                'numeric',
-            ],
             'LT' => [
                 'nullable',
                 'numeric',
@@ -431,38 +414,19 @@ class GradesPlansController extends Controller
                 'nullable',
                 'numeric',
             ],
-            'HK' => [
-                'required',
-                'numeric',
-            ],
-            'GradeId' => [
-                'required',
+            'DA' => [
+                'nullable',
                 'numeric',
             ],
         ],$messages)->validate();
 
         //Check 4 column unique
-        // $dbunique = $db->code.$db->name.$db->hk.$db->grade_id;
-        // $rsunique = $request['Code'].$request['Name'].$request['HK'].$request['GradeId'];
-        // if( $dbunique != $rsunique ){
-        //     $request->request->add(['unique'=> $rsunique]);
-        //     $request->validate([
-        //         'unique'=> new CourseUnique(),
-        //     ]);
-        // }
-        
-        // $db->code = $request->input('Code');
-        // $db->name = $request->input('Name');
-        // $db->dvht = $request->input('DVHT');
-        $db->tong_tiet = $request->input('TongTiet');
-        // $db->lt = $request->input('LT');
-        // $db->bt = $request->input('BT');
-        // $db->th = $request->input('TH');
-        // // $db->hk = $request->input('HK');
-        // $db->da = $request->input('ĐA');
-        // $db->tc = $request->input('TC');
-        // $db->sg = $request->input('SG');
-        // $db->ghi_chu = $request->input('GhiChu');
+
+        $db->tong_tiet = $request->input('LT')+$request->input('BT')+$request->input('TH')+$request->input('DA');
+        $db->lt = $request->input('LT');
+        $db->bt = $request->input('BT');
+        $db->th = $request->input('TH');
+        $db->da = $request->input('DA');
         $db->save();
         return response()->json(['message'=>'Update Success'], 200);
     }

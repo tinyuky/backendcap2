@@ -76,7 +76,7 @@ class CoursesController extends Controller
                     $new['LT'] = trim($row['lt']);
                     $new['BT'] = trim($row['bt']);
                     $new['TH'] = trim($row['th']);
-                    $new['ĐA'] = trim($row['d.amh']);
+                    $new['DA'] = trim($row['d.amh']);
                     $new['TC'] = trim($row['tc']);
                     $new['SG'] = trim($row['so_gio']);
                     $new['HK'] = trim($row['hk']);
@@ -116,7 +116,7 @@ class CoursesController extends Controller
                             'nullable',
                             'numeric',
                         ],
-                        'ĐA' => [
+                        'DA' => [
                             'nullable',
                             'numeric',
                         ],
@@ -301,7 +301,7 @@ class CoursesController extends Controller
         $db->bt = $request->input('BT');
         $db->th = $request->input('TH');
         $db->hk = $request->input('HK');
-        $db->da = $request->input('ĐA');
+        $db->da = $request->input('DA');
         $db->tc = $request->input('TC');
         $db->sg = $request->input('SG');
         $db->grade_id = $request->input('GradeId');
