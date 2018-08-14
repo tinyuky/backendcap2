@@ -27,4 +27,8 @@ class Course_Plans extends Model
     public function plan(){
         return $this->belongsTo('App\Grades_Plans','plan_id');
     }
+
+    public function classplan(){
+        return $this->hasMany('App\Classes_CoursesPlan','id','courseplan_id');
+    }
 }

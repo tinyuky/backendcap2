@@ -59,6 +59,7 @@ Route::group([
     Route::post('deleteCoursePlan/{$id}','GradesPlansController@deleteCoursePlan');
     Route::post('assignClassInPlan','GradesPlansController@createClassInPlan');
     Route::get('getAllClassInPlan','GradesPlansController@getAllClassInPlan');
+    Route::get('getClassInPlan/{id}','GradesPlansController@getClassInPlan');
     Route::get('deleteClassInPlan/{id}','GradesPlansController@deleteClassInPlan');
     Route::get('deleteEducationPlan/{id}','GradesPlansController@deleteEducationPlan');
     Route::get('getTrueFalseCourseInPlan/{id}','GradesPlansController@getTrueFalseCourseInPlan');

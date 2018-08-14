@@ -455,6 +455,15 @@ class GradesPlansController extends Controller
         return Classes_CoursesPlanResource::collection(Classes_CoursesPlan::all());
     }
 
+    public function getClassInPlan($id){
+        $courses = Course_Plans::where('plan_id',$id)->get();
+        $courseslst = [];
+        foreach ($courses as $value) {
+            array_push($courseslst,$value->id);
+        }
+        return Classes_CoursesPlanResource::collection(Classes_CoursesPlan::whereIn('courseplan_id',$courseslst)->get());
+    }
+
     public function deleteClassInPlan($id){
         Classes_CoursesPlan::find($id)->delete();
         return response()->json(['message' => 'Delete success', 200]);
@@ -484,7 +493,8 @@ class GradesPlansController extends Controller
             $rs[] = [
                 'Id'=>$value->id,
                 'Name'=>$value->course->name,
-                'Status'=>$status
+                'Status'=>$status,
+                'Grade'=> $value->course->grade->name
             ];
         }
         return json_encode($rs);
