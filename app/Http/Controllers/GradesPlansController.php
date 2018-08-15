@@ -490,12 +490,14 @@ class GradesPlansController extends Controller
             if( count($class) > 0){
                 $status = false;
             }
-            $rs[] = [
-                'Id'=>$value->id,
+            $row = [
                 'Name'=>$value->course->name,
                 'Status'=>$status,
                 'Grade'=> $value->course->grade->name
             ];
+            if(!in_array($row,$rs,TRUE)){
+                $rs[] = $row;
+            }
         }
         return json_encode($rs);
     }
