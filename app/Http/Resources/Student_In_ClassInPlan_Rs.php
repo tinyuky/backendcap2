@@ -3,10 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Grades;
-use App\Http\Resources\Classes;
 
-class Students extends JsonResource
+class Student_In_ClassInPlan_Rs extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +14,6 @@ class Students extends JsonResource
      */
     public function toArray($request)
     {
-        $this->resource->load('class');
         return [
             'Id'=> $this->id,
             'StudentId' => $this->student_id,
@@ -24,7 +21,8 @@ class Students extends JsonResource
             'Dob' =>$this->dob,
             'Gender' => $this->gender,
             'Status'=> $this->status,
-            'Class' => $this->whenLoaded('class')->name
+            // 'Class' => $this->whenLoaded('class')->name,
+            'InClass' => $this->inclass,
         ];
     }
 }

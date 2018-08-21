@@ -22,6 +22,7 @@ class Classes_CoursesPlanRs extends JsonResource
             'CoursePlanId' => $this->courseplan_id,
             'Course' => $this->whenLoaded('courseinplan')->course->name,
             'Grade' => $this->whenLoaded('courseinplan')->course->grade->name,
+            'GradeId' => $this->whenLoaded('courseinplan')->course->grade->id,
             'LecturerId' => $this->lecturer_id,
             'Lecturer' => $this->whenLoaded('lecturer')->name,
         ];

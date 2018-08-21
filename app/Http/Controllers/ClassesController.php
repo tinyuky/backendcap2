@@ -89,4 +89,8 @@ class ClassesController extends Controller
     public function getall(){
         return ClassesResource::collection(Classes::all()->sortByDesc('name'));
     }
+
+    public function getClassesByGrade($gradeid){
+        return ClassesResource::collection(Classes::where('grade_id',$gradeid)->get());
+    }
 }

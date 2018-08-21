@@ -3,19 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Grades_Plans;
 use App\Course_Plans;
 use App\Courses;
 use App\Grades;
+use App\Classes_CoursesPlan;
+use App\Students_ClassInPlan;
+use App\Students;
 use App\Http\Resources\Course as CourseResource;
 use App\Http\Resources\GradePlan as GradePlanResource;
 use App\Http\Resources\CoursesPlans as CoursesPlansResource;
+use App\Http\Resources\Classes_CoursesPlanRs as Classes_CoursesPlanResource;
+use App\Http\Resources\Student_In_ClassInPlan_Rs as Student_In_ClassInPlan_Rs;
 use App\Rules\GradePlanUnique;
 use Excel;
-use Illuminate\Support\Facades\Storage;
 use File;
-use App\Classes_CoursesPlan;
-use App\Http\Resources\Classes_CoursesPlanRs as Classes_CoursesPlanResource;
 use Validator;
 
 class GradesPlansController extends Controller
@@ -500,6 +503,67 @@ class GradesPlansController extends Controller
             }
         }
         return json_encode($rs);
+    }
+
+    public function getStudentInClassInPlan($classinplan_id,$class_id){
+        $students = Students::where('class_id',$class_id)->get();
+        $studentsinclass = Students_ClassInPlan::where('classinplan_id',$classinplan_id)->get();
+        $idlst = [];
+        $rs=[];
+        foreach ($studentsinclass as $key => $value) {
+            $idlst[] = $value->student_id;
+        }
+        foreach ($students as $key => $value) {
+            if( in_array($value->id,$idlst) ){
+                $rs[] =['Id'=> $value->id,
+            'StudentId' => $value->student_id,
+            'Name' => $value->name,
+            'Dob' =>$value->dob,
+            'Gender' => $value->gender,
+            'Status'=> $value->status,
+            // 'Class' => $this->whenLoaded('class')->name,
+            'InClass' => 'true',];
+            }
+            else{
+                $rs[] =['Id'=> $value->id,
+            'StudentId' => $value->student_id,
+            'Name' => $value->name,
+            'Dob' =>$value->dob,
+            'Gender' => $value->gender,
+            'Status'=> $value->status,
+            // 'Class' => $this->whenLoaded('class')->name,
+            'InClass' => 'false',];
+            }
+        }
+        // return Student_In_ClassInPlan_Rs::collection($students); 
+        return response()->json($rs); 
+    }
+
+    public function assignStudentInClassInPlan(Request $request){
+        $class = Students_ClassInPlan::where('classinplan_id',$request['ClassId'])->get();
+        $newstudents = $request['Students'];
+        $oldstudents = [];
+        foreach ($class as $key => $value) {
+            $oldstudents[] = $value->student_id;
+        }
+        
+        if( (count($oldstudents) > 0) || (count($newstudents) > 0)){
+            $remove = array_diff($oldstudents,$newstudents);
+            if(count($remove) > 0 ){
+                Students_ClassInPlan::whereIn('student_id',$remove)->where('classinplan_id',$request['ClassId'])->delete();
+            }
+            $add = array_diff($newstudents,$oldstudents);
+            if(count($add) > 0){
+                foreach ($add as $key => $value) {
+                    $student = new Students_ClassInPlan();
+                    $student->student_id = $value;
+                    $student->classinplan_id = $request['ClassId'];
+                    $student->save();
+                }
+            }
+        }
+        
+        return response()->json(['message' => 'Update success', 200]);
     }
 
 }

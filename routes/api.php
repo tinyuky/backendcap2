@@ -33,12 +33,14 @@ Route::group([
     Route::post('updateClass','ClassesController@update');
     Route::get('getClass/{id}','ClassesController@get');
     Route::get('getAllClasses','ClassesController@getall');
-
+    Route::get('getClassesByGrade/{gradeid}','ClassesController@getClassesByGrade');
+    
     Route::post('handleFile','StudentsController@handle');    
     Route::get('importFile/{name}','StudentsController@import'); 
     Route::post('updateStudent','StudentsController@update');
     Route::get('getStudent/{id}','StudentsController@get');
     Route::get('getAllStudents','StudentsController@getall');
+    Route::get('getStudentsByClass/{classid}','StudentsController@getStudentsByClass');
 
     Route::post('handleCourse/{id}','CoursesController@handle');
     Route::get('importCourse/{name}/{grade_id}','CoursesController@import');  
@@ -63,11 +65,11 @@ Route::group([
     Route::get('deleteClassInPlan/{id}','GradesPlansController@deleteClassInPlan');
     Route::get('deleteEducationPlan/{id}','GradesPlansController@deleteEducationPlan');
     Route::get('getTrueFalseCourseInPlan/{id}','GradesPlansController@getTrueFalseCourseInPlan');
-
-    
-    
     Route::get('getGradeByPlan/{planid}','GradesPlansController@getGradeByPlan');
     Route::get('getCourseByPlan/{planid}','GradesPlansController@getCourseByPlan');
+    Route::get('getStudentInClassInPlan/{classinplan_id}/{class_id}','GradesPlansController@getStudentInClassInPlan');
+    Route::post('assignStudentInClassInPlan','GradesPlansController@assignStudentInClassInPlan');
+    
 
 
     Route::get('getAllLogs','LogController@getall');

@@ -274,4 +274,11 @@ class StudentsController extends Controller
         }
         return response()->json($rs);
     }
+
+    public function getStudentsByClass($classid){
+        $students = Students::where('class_id',$classid)->get();
+        return StudentsResource::collection($students);
+    }
+
+    
 }
