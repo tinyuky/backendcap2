@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'auth.jwtad' => \App\Http\Middleware\JWTwithAdmin::class,
         'auth.jwtass' => \App\Http\Middleware\JWTwithAssistant::class,
+        'auth.jwtlec' => \App\Http\Middleware\JWTwithLecturer::class,
     ];
 }

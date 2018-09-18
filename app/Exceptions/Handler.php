@@ -46,7 +46,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+        if ($exception instanceof \Illuminate\Database\QueryException) {
+            return response()->json(['error' => 'Can not connect to database. Check your connection'], 400);
+        } elseif ($exception instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+        // if ($exception instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
             return response()->json(['error' => 'Token is invalid', 'action' => 'login'], 400);
         } elseif ($exception instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
             return response()->json(['error' => 'Token is expired', 'action' => 'login'], 400);

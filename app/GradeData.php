@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Students_ClassInPlan extends Model
+class GradeData extends Model
 {
-    protected $table = 'student_classinplan';
+    protected $table = 'gradedata';
     protected $fillable = [
-        'id','stundent_id','classinplan_id'
+        'name','gradestructure_id','student_id','grade'
     ];
 
     /**
@@ -19,8 +19,4 @@ class Students_ClassInPlan extends Model
     protected $hidden = [
         'created_at', 'updated_at',
     ];
-
-    public function student(){
-        return $this->belongsTo('App\Students','student_id');
-    }
 }

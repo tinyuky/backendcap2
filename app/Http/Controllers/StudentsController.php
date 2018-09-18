@@ -30,7 +30,7 @@ class StudentsController extends Controller
         Config::set('excel.import.startRow',8);
         $data = Excel::load(Storage::disk('public_uploads')->getDriver()->getAdapter()->getPathPrefix().$filename, function($reader) {
         })->get();
-
+        // dd($data);
         // create array to store data
         $students = [];
         $count = 0;
@@ -57,6 +57,7 @@ class StudentsController extends Controller
         if(count($data)>0){
             // check data
             foreach($data as $row ){
+                // echo ($row);
                 $erstt = '';
                 $new = [];
                 $new['STT'] = $row['tt'];

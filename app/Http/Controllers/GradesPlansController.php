@@ -494,9 +494,10 @@ class GradesPlansController extends Controller
                 $status = false;
             }
             $row = [
+                'Id' => $value->id,
                 'Name'=>$value->course->name,
                 'Status'=>$status,
-                'Grade'=> $value->course->grade->name
+                'Grade'=> $value->course->grade->name,
             ];
             if(!in_array($row,$rs,TRUE)){
                 $rs[] = $row;

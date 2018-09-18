@@ -82,6 +82,19 @@ Route::group([
     Route::get('getAllActiveLecturers','LectureAccountController@getallactive');
 });
 
+Route::group([
+    'prefix' => 'lecturer',
+    'middleware'=>'auth.jwtlec'
+],function($router){    
+    Route::get('getAllClassByLecturer/{lectureid}','StudiedClassController@getAllClassByLecture');
+    Route::post('importgrade/{classid}','GradeManagementController@importgrade');
+});
+Route::get('getGradeByClass/{class_id}','GradeManagementController@getGradeByClass');
+
 Route::get('exportEducationPlanByGrade/{planid}/{gradeid}','GradesPlansController@exportByGrade');
 Route::get('exportEducationPlan/{id}','GradesPlansController@export');
 Route::get('downCourseWord/{grade_id}','CoursesController@downWord');
+Route::get('exportGrade/{class_id}','GradeManagementController@exportGrade');
+Route::get('exportgradebyclass/{class_id}','GradeManagementController@exportGrade');
+Route::get('getClassBySTID/{student_id}','GradeManagementController@getClassBySTID');
+Route::get('getGradeBySTID/{class_id}/{student_id}','GradeManagementController@getGradeBySTID');
