@@ -87,6 +87,7 @@ Route::group([
     'middleware'=>'auth.jwtlec'
 ],function($router){    
     Route::get('getAllClassByLecturer/{lectureid}','StudiedClassController@getAllClassByLecture');
+    Route::get('getStudentByClass/{classid}','GradeManagementController@getStudentByClass');
     Route::post('importgrade/{classid}','GradeManagementController@importgrade');
 });
 Route::get('getGradeByClass/{class_id}','GradeManagementController@getGradeByClass');

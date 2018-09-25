@@ -19,6 +19,7 @@ use App\Http\Resources\CoursesPlans as CoursesPlansResource;
 use App\Http\Resources\Classes_CoursesPlanRs as Classes_CoursesPlanResource;
 use App\Http\Resources\Student_In_ClassInPlan_Rs as Student_In_ClassInPlan_Rs;
 use App\Http\Resources\Student_ClassInPlan_Rs as Student_ClassInPlan_Resource;
+use App\Http\Resources\Students as StudentsResource;
 use App\Rules\GradePlanUnique;
 use Excel;
 use File;
@@ -31,26 +32,117 @@ class GradeManagementController extends Controller
     public function exportGrade($class_id){
         $sheets = DB::table('gradestructure')->select('sheet')
             ->where('classinplan_id',$class_id)->distinct()->get();
-        $allgradestructure = GradeStructure::where('classinplan_id',$class_id)->get();
-        $students = Students_ClassInPlan::where('classinplan_id',$class_id)->get();
-        $allstudents = Students::all();
-        $allgradedata = GradeData::all();
-        $stdlst = [];
-        foreach ($students as $key => $value) {
-            preg_match('/[a-zA-Z0-9]*$/', $value->student->name, $firstreg);
-            $stdlst[] = $firstreg[0].'-'.$value->student_id;
-        }
-        asort($stdlst);
-        $edit = [];
-        foreach ($sheets as $key => $value) {
-            $sheet = [];
-            $stt = 1 ;
-            $sheet[0] = ['#','Student ID','First Name','Middle Name','Last Name','Class'] ;
-            $allgradestructurebysheet = $allgradestructure->where('sheet',$value->sheet);
-            foreach ($allgradestructurebysheet as $struc) {
-                $sheet[0][] = $struc->name;
+        if( count($sheets) > 0){
+
+            $allgradestructure = GradeStructure::where('classinplan_id',$class_id)->get();
+            $students = Students_ClassInPlan::where('classinplan_id',$class_id)->get();
+            $allstudents = Students::all();
+            $allgradedata = GradeData::all();
+            $stdlst = [];
+            foreach ($students as $key => $value) {
+                preg_match('/[a-zA-Z0-9]*$/', $value->student->name, $firstreg);
+                $stdlst[] = $firstreg[0].'-'.$value->student_id;
             }
-            
+            asort($stdlst);
+            $edit = [];
+            foreach ($sheets as $key => $value) {
+                $sheet = [];
+                $stt = 1 ;
+                $sheet[0] = ['#','Student ID','First Name','Middle Name','Last Name','Class'] ;
+                $allgradestructurebysheet = $allgradestructure->where('sheet',$value->sheet);
+                foreach ($allgradestructurebysheet as $struc) {
+                    $sheet[0][] = $struc->name;
+                }
+                
+                foreach ($stdlst as $std) {
+                    $idlst = explode('-',$std);
+                    $id = $idlst[1];
+                    $student = $allstudents->firstWhere('id',$id);
+                    $studentname = $student->name; 
+                    preg_match('/[a-zA-Z0-9]*$/', $studentname, $firstreg);
+                    $newname1 = preg_replace('/[a-zA-Z0-9]*$/', '', $studentname);
+                    preg_match('/^[^\s]*/', trim($newname1), $lastreg);
+                    $newname2 = preg_replace('/^[^\s]*/', '', $newname1);
+                    
+                    $firstname = '';
+                    $middlename = '';
+                    $lastname = '';
+                    
+                    if($firstreg[0]){
+                        $firstname = $firstreg[0];
+                    }
+                    if($lastreg[0]){
+                        $lastname = $lastreg[0];
+                    }
+                    if(strlen (trim($newname2)) > 0){
+                        $middlename = trim($newname2);
+                    }
+                    
+                    $sheet[$stt][] = $stt;
+                    $sheet[$stt][] = $student->student_id;
+                    $sheet[$stt][] = $firstname;
+                    $sheet[$stt][] = $middlename;
+                    $sheet[$stt][] = $lastname;
+                    $sheet[$stt][] = $student->class->name;
+                    foreach ($allgradestructurebysheet as $struc) {
+                        $grades = $allgradedata->where('student_id',$student->id)
+                        ->where('gradestructure_id',$struc->id)->first();
+                        if(is_null($grades)){
+                            $sheet[$stt][] = 0;
+                        }
+                        else{
+                            $sheet[$stt][] = $grades->grade;
+                        }
+                    }
+                    $stt++;
+                    
+                }
+                
+                $edit[$value->sheet]= $sheet;
+            }
+            Excel::create('GradeExport', function($excel) use($edit) {
+                foreach ($edit as $key => $value) { 
+                    $excel->sheet($key.'', function($sheet) use($value) {
+                        $start = 1;
+                        
+                        foreach ($value as $row) {
+                            $sheet->row($start,$row);
+                            $sheet->row($start, function($row){
+                                $row->setFontFamily('Times New Roman');
+                            });
+                            $start++;
+                        }
+                        
+                        $columnborder = '';
+                        $countborder = count($value[0]);
+                        $fromborder = 1;
+                        foreach (range('A', 'Z') as $column){
+                            if($fromborder == $countborder){
+                                $columnborder = $column;
+                                break;
+                            }
+                            $fromborder++;
+                        } 
+                        $sheet->setBorder('A1:'.$columnborder.($start-1), 'thin', "D8572C");
+                    });
+                }
+                
+                
+            })->download('xlsx');
+            # Changing properties
+        }
+        else{
+            $students = Students_ClassInPlan::where('classinplan_id',$class_id)->get();
+            $allstudents = Students::all();
+            $edit = [];
+            $stt = 1 ;
+            $edit[0] = ['#','Student ID','First Name','Middle Name','Last Name','Class'] ;
+            $stdlst = [];
+            foreach ($students as $key => $value) {
+                preg_match('/[a-zA-Z0-9]*$/', $value->student->name, $firstreg);
+                $stdlst[] = $firstreg[0].'-'.$value->student_id;
+            }
+            asort($stdlst);
             foreach ($stdlst as $std) {
                 $idlst = explode('-',$std);
                 $id = $idlst[1];
@@ -75,61 +167,49 @@ class GradeManagementController extends Controller
                     $middlename = trim($newname2);
                 }
                 
-                $sheet[$stt][] = $stt;
-                $sheet[$stt][] = $student->student_id;
-                $sheet[$stt][] = $firstname;
-                $sheet[$stt][] = $middlename;
-                $sheet[$stt][] = $lastname;
-                $sheet[$stt][] = $student->class->name;
-                foreach ($allgradestructurebysheet as $struc) {
-                    $grades = $allgradedata->where('student_id',$student->id)
-                        ->where('gradestructure_id',$struc->id)->first();
-                    if(is_null($grades)){
-                        $sheet[$stt][] = 0;
-                    }
-                    else{
-                        $sheet[$stt][] = $grades->grade;
-                    }
-                }
+                $edit[$stt][] = $stt;
+                $edit[$stt][] = $student->student_id;
+                $edit[$stt][] = $firstname;
+                $edit[$stt][] = $middlename;
+                $edit[$stt][] = $lastname;
+                $edit[$stt][] = $student->class->name;
+
                 $stt++;
                 
             }
-            
-            $edit[$value->sheet]= $sheet;
-        }
-        Excel::create('GradeExport', function($excel) use($edit) {
-            foreach ($edit as $key => $value) { 
-                $excel->sheet($key.'', function($sheet) use($value) {
-                    $start = 1;
-                    
-                    foreach ($value as $row) {
-                        $sheet->row($start,$row);
-                        $sheet->row($start, function($row){
-                            $row->setFontFamily('Times New Roman');
-                        });
-                        $start++;
-                    }
-                    
-                    $columnborder = '';
-                    $countborder = count($value[0]);
-                    $fromborder = 1;
-                    foreach (range('A', 'Z') as $column){
-                        if($fromborder == $countborder){
-                            $columnborder = $column;
-                            break;
+            Excel::create('GradeExport', function($excel) use($edit) {
+                 
+                    $excel->sheet('Sheet1', function($sheet) use($edit) {
+                        $start = 1;
+                        
+                        foreach ($edit as $row) {
+                            $sheet->row($start,$row);
+                            $sheet->row($start, function($row){
+                                $row->setFontFamily('Times New Roman');
+                            });
+                            $start++;
                         }
-                        $fromborder++;
-                    } 
-                    $sheet->setBorder('A1:'.$columnborder.($start-1), 'thin', "D8572C");
-                });
-            }
-
-
-        })->download('xlsx');
-        # Changing properties
+                        
+                        $columnborder = '';
+                        $countborder = count($edit[0]);
+                        $fromborder = 1;
+                        foreach (range('A', 'Z') as $column){
+                            if($fromborder == $countborder){
+                                $columnborder = $column;
+                                break;
+                            }
+                            $fromborder++;
+                        } 
+                        $sheet->setBorder('A1:'.$columnborder.($start-1), 'thin', "D8572C");
+                    });
+                
+            })->download('xlsx');
+            
+            
+        }
+            
+        }
         
-    }
-    
     public function importgrade(Request $request,$classid){
         set_time_limit(0);
         $classinplan = $classid;
@@ -383,5 +463,13 @@ class GradeManagementController extends Controller
         }
         return $rs;   
     }
+
+    public function getStudentByClass($classid){
+        $students = Students_ClassInPlan::where('classinplan_id',$classid)->get();
+        $stdlst = $students->pluck('student_id');
+        return StudentsResource::collection(Students::whereIn('id',$stdlst)->get());
+    }
+
+
 
 }
